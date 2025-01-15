@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class PickableDrop : MonoBehaviour
 {
     public WeaponSO weapon;
@@ -10,14 +9,22 @@ public class PickableDrop : MonoBehaviour
     private float waitTime;
     private void Awake()
     {
-        
+        objectModel = Instantiate(weapon.weaponModel,transform);
     }
-    public void OnTriggerEnter(Collider other)
+    public void OnTriggerStay(Collider other)
     {
-        if (other.TryGetComponent(out Inventory inventory))
+        if (other.TryGetComponent(out Inventory inventory) && objectModel.activeSelf)
         {
-            inventory.AddWeapon(weapon);
-            Destroy(gameObject);
+            if (inventory.AddWeapon(weapon))
+            {
+                objectModel.SetActive(false);
+                StartCoroutine(WaitSpawn());
+            }
         }
+    }
+    private IEnumerator WaitSpawn()
+    {
+        yield return new WaitForSeconds(waitTime);
+        objectModel.SetActive(true);
     }
 }
