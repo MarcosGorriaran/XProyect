@@ -9,7 +9,7 @@ public class HPManager : MonoBehaviour
     [SerializeField]
     float maxHp;
     public event Action onDeath;
-    public event Action onRevive;
+    public event Action<GameObject> onRevive;
     public event Action<float> onHPChange;
     // Start is called before the first frame update
 
@@ -21,6 +21,7 @@ public class HPManager : MonoBehaviour
     {
         if (!IsDead())
         {
+            if (damage < 0) damage = 0;
             hp -= damage;
             onHPChange?.Invoke(-damage);
             if (IsDead())
@@ -30,11 +31,20 @@ public class HPManager : MonoBehaviour
 
         }
     }
+    public void Heal(float healAmount)
+    {
+        if (!IsDead())
+        {
+            hp+= healAmount;
+            if (hp > maxHp) hp = maxHp;
+            onHPChange?.Invoke(healAmount);
+        }
+    }
     public void Revive()
     {
         hp = maxHp;
         onHPChange?.Invoke(maxHp);
-        onRevive?.Invoke();
+        onRevive?.Invoke(gameObject);
     }
     public bool IsDead() { return hp <= 0; }
     public float GetHp() { return hp; }
