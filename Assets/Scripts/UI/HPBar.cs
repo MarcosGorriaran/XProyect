@@ -7,7 +7,7 @@ public class HPBar : MonoBehaviour
     public HPManager trackedHp;
     private Slider _slider;
 
-    private void Awake()
+    private void Start()
     {
         trackedHp.onHPChange += UpdateBar;
         _slider = GetComponent<Slider>();
