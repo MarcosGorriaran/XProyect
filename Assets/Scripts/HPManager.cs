@@ -9,8 +9,10 @@ public class HPManager : MonoBehaviour
     [SerializeField]
     float maxHp;
     public event Action onDeath;
+    public event Action<GameObject> onDeathBy;
     public event Action<GameObject> onRevive;
     public event Action<float> onHPChange;
+    public event Action<float,GameObject> onHPChangeBy;
     // Start is called before the first frame update
 
     private void Awake()
@@ -26,6 +28,22 @@ public class HPManager : MonoBehaviour
             onHPChange?.Invoke(-damage);
             if (IsDead())
             {
+                onDeath?.Invoke();
+            }
+
+        }
+    }
+    public void Hurt(float damage, GameObject source)
+    {
+        if (!IsDead())
+        {
+            if (damage < 0) damage = 0;
+            hp -= damage;
+            onHPChangeBy?.Invoke(-damage,source);
+            onHPChange?.Invoke(damage);
+            if (IsDead())
+            {
+                onDeathBy?.Invoke(source);
                 onDeath?.Invoke();
             }
 
