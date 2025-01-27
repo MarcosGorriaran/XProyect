@@ -19,15 +19,19 @@ public class DamageIndicator : MonoBehaviour
 
     protected void OnHarm(float damage)
     {
-        _damageIndicator.enabled = true;
-        if (_countdownCoroutine != null)
+        if(_damageIndicator != null)
         {
-            StopCoroutine(_countdownCoroutine);
-            _countdownCoroutine = null;
+            _damageIndicator.enabled = true;
+            if (_countdownCoroutine != null)
+            {
+                StopCoroutine(_countdownCoroutine);
+                _countdownCoroutine = null;
+            }
+            _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
         }
-        _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
+        
     }
-    protected IEnumerator DesactivateIndicatorOn(Image indicator)
+    private IEnumerator DesactivateIndicatorOn(Image indicator)
     {
         yield return new WaitForSeconds(feedbackDuration);
         indicator.enabled = false;
