@@ -9,7 +9,7 @@ public class DamageTest : MonoBehaviour
     {
         if(other.TryGetComponent(out HPManager hPManager))
         {
-            hPManager.Hurt(damage);
+            hPManager.Hurt(damage,gameObject);
         }
     }
 }
