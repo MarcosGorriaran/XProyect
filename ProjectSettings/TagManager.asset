@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - instancePosition0
+  - instancePosition1
+  - instancePosition2
+  - instancePosition3
+  - PlayerButtons0
+  - PlayerButtons1
+  - PlayerButtons2
+  - PlayerButtons3
+  - ButtonGroup
   layers:
   - Default
   - TransparentFX

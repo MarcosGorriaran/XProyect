@@ -9,9 +9,14 @@ public class PickableDrop : MonoBehaviour
     private float waitTime;
     private void Awake()
     {
+
+        objectModel = Instantiate(weapon.weaponPrefab,transform);
+    }
+    /*public void OnTriggerStay(Collider other)
         objectModel = Instantiate(weapon.weaponModel,transform);
     }
     public void OnTriggerStay(Collider other)
+
     {
         if (other.TryGetComponent(out Inventory inventory) && objectModel.activeSelf)
         {
@@ -21,6 +26,9 @@ public class PickableDrop : MonoBehaviour
                 StartCoroutine(WaitSpawn());
             }
         }
+
+    }*/
+
     }
     private IEnumerator WaitSpawn()
     {
