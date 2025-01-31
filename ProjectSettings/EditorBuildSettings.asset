@@ -9,7 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: e8f4805ef9dca6e468e8996b583a26d7
   - enabled: 1
-    path: Assets/Scenes/Arnau.unity
+    path: Assets/Scenes/SelectSkin.unity
+    guid: 6ecca38290ef2c64aadb99d00e54f381
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
     guid: 24f4ca0e7b6c872438b582c98df0303e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2a66ea23aecebfc45971f57fcda507c5, type: 2}
