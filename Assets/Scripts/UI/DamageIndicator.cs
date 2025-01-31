@@ -28,6 +28,15 @@ public class DamageIndicator : MonoBehaviour
                 _countdownCoroutine = null;
             }
             _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
+        if(_damageIndicator != null)
+        {
+            _damageIndicator.enabled = true;
+            if (_countdownCoroutine != null)
+            {
+                StopCoroutine(_countdownCoroutine);
+                _countdownCoroutine = null;
+            }
+            _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
         }
         
     }
