@@ -11,6 +11,7 @@ public class DamageIndicator : MonoBehaviour
     Image _damageIndicator;
     Coroutine _countdownCoroutine;
     public float feedbackDuration;
+
     protected virtual void Awake()
     {
         _charHP.onHPChange += OnHarm;
@@ -19,16 +20,7 @@ public class DamageIndicator : MonoBehaviour
 
     protected void OnHarm(float damage)
     {
-        if(_damageIndicator != null)
-        {
-            _damageIndicator.enabled = true;
-            if (_countdownCoroutine != null)
-            {
-                StopCoroutine(_countdownCoroutine);
-                _countdownCoroutine = null;
-            }
-            _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
-        if(_damageIndicator != null)
+        if (_damageIndicator != null)
         {
             _damageIndicator.enabled = true;
             if (_countdownCoroutine != null)
@@ -38,13 +30,14 @@ public class DamageIndicator : MonoBehaviour
             }
             _countdownCoroutine = StartCoroutine(DesactivateIndicatorOn(_damageIndicator));
         }
-        
     }
+
     private IEnumerator DesactivateIndicatorOn(Image indicator)
     {
         yield return new WaitForSeconds(feedbackDuration);
         indicator.enabled = false;
     }
+
     protected HPManager GetHPManager()
     {
         return _charHP;
