@@ -13,6 +13,9 @@ TagManager:
   - PlayerButtons2
   - PlayerButtons3
   - ButtonGroup
+  - Ball
+  - Map
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -20,15 +23,15 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player0
+  - Player1
+  - Player2
+  - Player3
+  - FP0
+  - FP1
+  - FP2
+  - FP3
+  - Weapon
   - 
   - 
   - 

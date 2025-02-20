@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17292ecaf75641f45ac72b3549b0c400, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 7131683807273480775, guid: 8533fdef3c8ff914d8b8cbf8a9011888, type: 3}
+  weaponPrefab: {fileID: 2045970091822271087, guid: fac04bebe2831a443a61fb04e15e3acd, type: 3}
   weaponCooldown: 0
+  positionOffset: {x: 1.143, y: 0, z: -0.387}

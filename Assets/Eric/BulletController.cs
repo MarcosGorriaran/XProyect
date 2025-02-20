@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    public float bulletSpeed = 10f;
     public IWeapon weapon;
 
     private void OnTriggerEnter(Collider other)
@@ -21,5 +20,6 @@ public class BulletController : MonoBehaviour
             weapon.DisactiveBullet(gameObject);
             Debug.Log("Bala salió del mapa y fue devuelta.");
         }
+
     }
 }

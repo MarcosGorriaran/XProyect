@@ -6,18 +6,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    public float moveSpeed = 5f;
-
-    [SerializeField]
-    private int playerIndex = 0;
-
-
-    [SerializeField]
-    private float jumpForce = 1.5f;
-
-    [SerializeField]
-    private LayerMask groundLayer;
+    [SerializeField] public float walkSpeed = 3f;
+    [SerializeField] public float runSpeed = 6f;
+    [SerializeField] private float jumpForce = 1.5f;
+    [SerializeField] private LayerMask groundLayer;
+    private int playerIndex;
 
     private Rigidbody rb;
     private Vector2 inputVector = Vector2.zero;
@@ -26,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private Inventory inventory;
     private IWeapon currentWeapon;
     private int currentWeaponIndex = 0;
+    private Animator animator;
 
     private void Awake()
     {
@@ -33,16 +27,8 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         orientation = transform.Find("Camera");
         inventory = GetComponent<Inventory>();
+        animator = GetComponent<Animator>();
     }
-
-    private void Start()
-    {
-        if (inventory != null && inventory.GetInventorySize() > 0)
-        {
-            ChangeWeapon(0);
-        }
-    }
-
 
     private void Update()
     {
@@ -52,25 +38,64 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGrounded()
     {
-        Vector3 origin = transform.position + Vector3.down * 0.1f;
-        float rayLength = 1.1f;
+        Debug.Log("Ejecutando CheckGrounded()"); // Asegurarnos de que se ejecuta
 
-        // Dibuja el rayo en la escena
-        Debug.DrawRay(origin, Vector3.down * rayLength, isGrounded ? Color.green : Color.red);
-        isGrounded = Physics.Raycast(origin, Vector3.down, rayLength, groundLayer);
+        float rayLength = 1f;
+        float sphereCastHeight = 1.0f;
+
+        Vector3 spherePosition = transform.position + Vector3.up * sphereCastHeight;
+
+        isGrounded = Physics.SphereCast(spherePosition, 0.3f, Vector3.down, out _, rayLength, groundLayer);
+        animator.SetBool("isGrounded", isGrounded);
+
+        Debug.DrawRay(spherePosition, Vector3.down * rayLength, isGrounded ? Color.green : Color.red);
     }
+
+
 
     private void MovePlayer()
     {
-        if (inputVector == Vector2.zero) { rb.velocity = new Vector3(0, rb.velocity.y, 0); return; }
+        float moveX = inputVector.x;
+        float moveY = inputVector.y;
 
-        Vector3 moveDirection = orientation.forward * inputVector.y + orientation.right * inputVector.x;
-        moveDirection.y = 0; // Evitar movimiento vertical
+        if (moveX == 0 && moveY == 0)
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            animator.SetFloat("MoveX", 0);
+            animator.SetFloat("MoveY", 0);
+            return;
+        }
+
+        float joystickIntensity = inputVector.magnitude;
+        bool isRunning = joystickIntensity > 0.6f;
+        float moveSpeed = isRunning ? runSpeed : walkSpeed;
+
+        Vector3 moveDirection = orientation.forward * moveY + orientation.right * moveX;
+        moveDirection.y = 0;
+
+        // Detectar pendiente
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.2f, groundLayer))
+        {
+            Vector3 normal = hit.normal;
+            float slopeAngle = Vector3.Angle(normal, Vector3.up);
+
+            if (slopeAngle < 45f) // Subir si la pendiente es menor a 45°
+            {
+                moveDirection = Vector3.ProjectOnPlane(moveDirection, normal).normalized;
+            }
+        }
+
         rb.velocity = new Vector3(moveDirection.x * moveSpeed, rb.velocity.y, moveDirection.z * moveSpeed);
+
+        // Pasar valores al Animator
+        animator.SetFloat("MoveX", moveX * (isRunning ? 1.2f : 1f)); // Escalamos para diferenciar correr de caminar
+        animator.SetFloat("MoveY", moveY * (isRunning ? 1.5f : 1f));
     }
 
     public void SetInputVector(Vector2 direction)
     {
+        Debug.Log($"SetInputVector recibido: {direction}");
         inputVector = direction;
     }
 
@@ -79,6 +104,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetTrigger("Jump");
         }
     }
 
@@ -107,9 +133,10 @@ public class PlayerController : MonoBehaviour
         else if (currentWeaponIndex < 0)
             currentWeaponIndex = inventorySize - 1;
 
-        currentWeapon = inventory.ChangeWeapon((uint)currentWeaponIndex);
+        inventory.ChangeWeapon((uint)currentWeaponIndex);
+        currentWeapon = inventory.GetActiveWeapon();
 
-        Image delayAttackImage = GetComponentInChildren<Canvas>().GetComponentInChildren<Image>();
+        Image delayAttackImage = transform.parent.GetComponentInChildren<Canvas>().GetComponentInChildren<Image>();
         if (delayAttackImage != null)
         {
             if (currentWeapon is Crossbow crossbow)
