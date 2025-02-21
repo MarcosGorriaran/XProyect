@@ -16,17 +16,8 @@ public class RegisterManager : AcountManager
     const string WrongRepeatPassword = "Deben repetirse los campos 'Contraseña' y 'Repetir contraseña'";
     const string SuccesfulRegister = "El proceso de registro se ha completado y ya tiene una sesion activa";
     const string BadAPIConection = "No ha sido posible conectarse con la API";
-    const string UsernameEmpty = "El nombre de usuario no puede estar vacio";
-    const string PasswordEmpty = "La contraseña no puede estar vacio";
     const string RepeatPasswordEmpty = "Repetir contraseña no puede estar vacio";
-    [SerializeField]
-    TMP_InputField _username;
-    [SerializeField]
-    TMP_Text _usernameErrorField;
-    [SerializeField]
-    TMP_InputField _password;
-    [SerializeField]
-    TMP_Text _passwordErrorField;
+    
     [SerializeField]
     TMP_InputField _repeatPassword;
     [SerializeField]
@@ -44,51 +35,27 @@ public class RegisterManager : AcountManager
         {
             StartCoroutine(SendInfo(new Acount()
             {
-                Username = _username.text,
-                Password = _password.text,
+                Username = Username.text,
+                Password = Password.text,
             }));
         }
-    }
-    private bool UsernameValidation()
-    {
-        return UsernameValidation(_username.text);
-    }
-    private bool PasswordValidation()
-    {
-        return PasswordValidation(_password.text);
     }
     private bool RepeatPasswordValidation()
     {
         return RepeatPasswordValidation(_repeatPassword.text);
     }
-    public bool UsernameValidation(string username)
+    public override bool PasswordValidation(string password)
     {
-        if (string.IsNullOrEmpty(username))
+        bool baseReturn = base.PasswordValidation(password);
+        if (!baseReturn) return baseReturn;
+        if (password != _repeatPassword.text)
         {
-            WriteError(UsernameEmpty,_usernameErrorField);
+            WriteError(WrongRepeatPassword, PasswordErrorField);
             return false;
         }
         else
         {
-            WriteSuccess(string.Empty, _usernameErrorField);
-            return true;
-        }
-    }
-    public bool PasswordValidation(string password)
-    {
-        if (string.IsNullOrEmpty(password))
-        {
-            WriteError(PasswordEmpty, _passwordErrorField);
-            return false;
-        }
-        else if (password!=_repeatPassword.text)
-        {
-            WriteError(WrongRepeatPassword,_passwordErrorField);
-            return false;
-        }
-        else
-        {
-            WriteSuccess(string.Empty, _passwordErrorField);
+            WriteSuccess(string.Empty, PasswordErrorField);
             return true;
         }
     }
@@ -99,7 +66,7 @@ public class RegisterManager : AcountManager
             WriteError(RepeatPasswordEmpty, _repeatPasswordErrorField);
             return false;
         }
-        else if (repeatPassword != _password.text)
+        else if (repeatPassword != Password.text)
         {
             WriteError(WrongRepeatPassword, _repeatPasswordErrorField);
             return false;
@@ -144,15 +111,15 @@ public class RegisterManager : AcountManager
     }
     protected override void DesactivateInputFields()
     {
-        _username.interactable = false;
-        _password.interactable = false;
+        Username.interactable = false;
+        Password.interactable = false;
         _repeatPassword.interactable = false;
         _registerButton.interactable = false;
     }
     protected override void ActivateInputFields()
     {
-        _username.interactable = true;
-        _password.interactable = true;
+        Username.interactable = true;
+        Password.interactable = true;
         _repeatPassword.interactable = true;
         _registerButton.interactable = true;
     }

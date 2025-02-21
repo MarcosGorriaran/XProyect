@@ -13,6 +13,8 @@ public abstract class AcountManager : MonoBehaviour
     const string WrongPasswordTranslation = "La nueva contraseña no puede ser la misma que la antigua";
     const string RepeatedUsername = "There is an acount with the same username";
     const string RepeatedUsernameTranslation = "Ya hay una cuenta con el mismo nombre";
+    const string UsernameEmpty = "El nombre de usuario no puede estar vacio";
+    const string PasswordEmpty = "La contraseña no puede estar vacio";
     private static Dictionary<string, string> _errorTranslator = new Dictionary<string, string>() 
     {
         {WrongLogin,WrongLoginTranslation },
@@ -28,6 +30,14 @@ public abstract class AcountManager : MonoBehaviour
     Color _successColor;
     [SerializeField]
     TMP_Text _generalErrorMessage;
+    [SerializeField]
+    TMP_InputField _username;
+    [SerializeField]
+    TMP_Text _usernameErrorField;
+    [SerializeField]
+    TMP_InputField _password;
+    [SerializeField]
+    TMP_Text _passwordErrorField;
 
 
     public static Acount Session
@@ -46,6 +56,22 @@ public abstract class AcountManager : MonoBehaviour
     protected Color SuccessColor
     {
         get { return _successColor; }
+    }
+    protected TMP_InputField Username
+    {
+        get { return _username; }
+    }
+    protected TMP_Text UsernameErrorField
+    {
+        get { return _usernameErrorField; }
+    }
+    protected TMP_InputField Password
+    {
+        get { return _password; }
+    }
+    protected TMP_Text PasswordErrorField
+    {
+        get { return _passwordErrorField; }
     }
     protected void WriteError(string message, TMP_Text textBox)
     {
@@ -79,6 +105,40 @@ public abstract class AcountManager : MonoBehaviour
     {
         _generalErrorMessage.text = message;
         _generalErrorMessage.color = _successColor;
+    }
+    protected bool UsernameValidation()
+    {
+        return UsernameValidation(_username.text);
+    }
+    protected bool PasswordValidation()
+    {
+        return PasswordValidation(_password.text);
+    }
+    public virtual bool UsernameValidation(string username)
+    {
+        if (string.IsNullOrEmpty(username))
+        {
+            WriteError(UsernameEmpty, _usernameErrorField);
+            return false;
+        }
+        else
+        {
+            WriteSuccess(string.Empty, _usernameErrorField);
+            return true;
+        }
+    }
+    public virtual bool PasswordValidation(string password)
+    {
+        if (string.IsNullOrEmpty(password))
+        {
+            WriteError(PasswordEmpty, _passwordErrorField);
+            return false;
+        }
+        else
+        {
+            WriteSuccess(string.Empty, _passwordErrorField);
+            return true;
+        }
     }
     protected abstract IEnumerator SendInfo(Acount acount);
     protected abstract void DesactivateInputFields();
