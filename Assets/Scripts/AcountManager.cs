@@ -47,6 +47,16 @@ public abstract class AcountManager : MonoBehaviour
     {
         get { return _successColor; }
     }
+    protected void WriteError(string message, TMP_Text textBox)
+    {
+        textBox.text = message;
+        textBox.color = _errorColor;
+    }
+    protected void WriteSuccess(string message, TMP_Text textBox)
+    {
+        textBox.text = message;
+        textBox.color = _successColor;
+    }
     protected string TranslateError(string error)
     {
         string translation;
