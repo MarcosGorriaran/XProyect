@@ -189,6 +189,8 @@ GameObject:
   m_Component:
   - component: {fileID: 791084885536747004}
   - component: {fileID: 2882592436046711918}
+  - component: {fileID: 1225156745221085625}
+  - component: {fileID: 1085684575568794147}
   m_Layer: 0
   m_Name: Trabuco
   m_TagString: Untagged
@@ -231,3 +233,38 @@ MonoBehaviour:
   maxBullets: 10
   shooting: 1
   duringRecharge: 0
+  weaponSO: {fileID: 11400000, guid: 6d0983008140e7a46a0c9a33d0d03506, type: 2}
+--- !u!114 &1225156745221085625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148056146776401167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec1aae90735a3a49b33ccdab69ee88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSO: {fileID: 11400000, guid: 6d0983008140e7a46a0c9a33d0d03506, type: 2}
+--- !u!65 &1085684575568794147
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148056146776401167}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.2151887, y: 1, z: 1}
+  m_Center: {x: 0.32379043, y: 0, z: 0}

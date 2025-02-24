@@ -7,7 +7,7 @@ public class Shotgun : MonoBehaviour, IWeapon
 {
     public Transform[] shootSpawns = new Transform[9]; // 9 puntos de disparo (cañones de la escopeta)
     public GameObject bulletPrefab; // Prefab de la bala
-    private Image delayAttack; // Barra de recarga
+    public Image delayAttack; // Barra de recarga
 
     public float autoRechargeTime = 1f; // Tiempo de recarga
     public int maxBullets = 10; // Máximo de balas en el pool
@@ -19,6 +19,7 @@ public class Shotgun : MonoBehaviour, IWeapon
     private bool duringRecharge = false;
     private bool isRecharged = true;
     private float time = 0f;
+    [SerializeField] WeaponSO weaponSO;
 
     void Start()
     {
@@ -53,20 +54,16 @@ public class Shotgun : MonoBehaviour, IWeapon
             return;
         }
 
+        GameObject shooter = GetComponentInParent<Player>().gameObject; 
+        if (shooter == null)
+        {
+            Debug.LogError("No se encontró el jugador que disparo.");
+        }
+
         // Obtenemos el centro de la pantalla
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
-        Vector3 targetPoint;
-
-        // Realizamos el Raycast para encontrar el punto de impacto
-        if (Physics.Raycast(ray, out hit))
-        {
-            targetPoint = hit.point; // Si el raycast golpea algo, usamos el punto de impacto
-        }
-        else
-        {
-            targetPoint = ray.GetPoint(1000); // Si no impacta nada, usamos un punto lejano
-        }
+        Vector3 targetPoint = Physics.Raycast(ray, out hit) ? hit.point : ray.GetPoint(1000);
 
         // Disparar los perdigones
         for (int i = 0; i < pelletsPerShot; i++)
@@ -74,13 +71,14 @@ public class Shotgun : MonoBehaviour, IWeapon
             if (bullets.Count == 0) break;
 
             GameObject bullet = bullets.Pop();
+            BulletController bulletController = bullet.GetComponent<BulletController>();
             bullet.GetComponent<BulletController>().weapon = this;
+            bulletController.shooter = shooter;
+
             bullet.transform.position = shootSpawns[i].position; // Usamos cada punto de disparo
             bullet.SetActive(true);
 
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
-
-            // Las balas van directamente hacia el punto de impacto del Raycast desde cada punto de disparo
             Vector3 direction = (targetPoint - shootSpawns[i].position).normalized; // Dirección desde cada punto de disparo
             rb.velocity = direction * bulletSpeed; // Establecemos la velocidad en la dirección calculada
         }
@@ -185,5 +183,10 @@ public class Shotgun : MonoBehaviour, IWeapon
         {
             bullets.Pop();
         }
+    }
+
+    public WeaponSO GetWeaponSO()
+    {
+        return weaponSO;
     }
 }

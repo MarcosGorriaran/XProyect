@@ -15,11 +15,16 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector2 inputVector = Vector2.zero;
     private bool isGrounded;
+    private bool isRecharged = true;
     private Transform orientation;
     private Inventory inventory;
     private IWeapon currentWeapon;
     private int currentWeaponIndex = 0;
     private Animator animator;
+    private Animator currentFPAnimator;
+    public Animator FPCrossbow;
+    private bool hasGorrocoptero = false;
+
 
     private void Awake()
     {
@@ -27,19 +32,18 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         orientation = transform.Find("Camera");
         inventory = GetComponent<Inventory>();
-        animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();    
     }
 
     private void Update()
     {
         MovePlayer();
         CheckGrounded();
+        UpdateFirstPersonAnimations();
     }
 
     private void CheckGrounded()
     {
-        Debug.Log("Ejecutando CheckGrounded()"); // Asegurarnos de que se ejecuta
-
         float rayLength = 1f;
         float sphereCastHeight = 1.0f;
 
@@ -63,6 +67,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
             animator.SetFloat("MoveX", 0);
             animator.SetFloat("MoveY", 0);
+            //ejecutar animacion de idle (default ya que es la entry)
             return;
         }
 
@@ -95,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetInputVector(Vector2 direction)
     {
-        Debug.Log($"SetInputVector recibido: {direction}");
+       
         inputVector = direction;
     }
 
@@ -103,6 +108,15 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
+            hasGorrocoptero = inventory.HasGorrocoptero();
+
+            if(hasGorrocoptero)
+            {
+                rb.AddForce(Vector3.up * jumpForce * 3, ForceMode.Impulse);
+                animator.SetTrigger("Jump");
+                return;
+            }
+          
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             animator.SetTrigger("Jump");
         }
@@ -113,9 +127,34 @@ public class PlayerController : MonoBehaviour
         if (currentWeapon != null)
         {
             currentWeapon.Attack();
+            animator.SetTrigger("Shoot");
+            if(currentFPAnimator != null)
+            {
+                currentFPAnimator.SetTrigger("Shoot");
+                currentFPAnimator.SetBool("isShooting", true);
+            }
+            if(FPCrossbow != null)
+            {
+                FPCrossbow.SetTrigger("Shoot");
+                FPCrossbow.SetBool("isShooting", true);
+                FPCrossbow.SetBool("Recharged", false);   
+            }
         }
     }
 
+    public void UnrechargedState()
+    {
+        //mientras recharged de FPCrossbow sea falso, se ejecuta la animacion del arma sin recargar
+        if(FPCrossbow != null)
+        {
+            isRecharged = FPCrossbow.GetBool("Recharged");
+            if(isRecharged == false)
+            {
+                FPCrossbow.Play("Unrecharged");
+            }
+        }
+
+    }
 
     public void ChangeWeapon(float direction)
     {
@@ -160,6 +199,16 @@ public class PlayerController : MonoBehaviour
         if (currentWeapon != null)
         {
             currentWeapon.Recharge();
+            if(currentFPAnimator != null)
+            {
+                currentFPAnimator.SetTrigger("Recharge");
+                currentFPAnimator.SetBool("isRecharging", true);
+            }
+            if(FPCrossbow != null)
+            {
+                FPCrossbow.SetTrigger("Recharge");
+                FPCrossbow.SetBool("Recharged", true);
+            }
         }
     }
 
@@ -173,5 +222,70 @@ public class PlayerController : MonoBehaviour
     public int GetPlayerIndex()
     {
         return playerIndex;
+    }
+
+    private void UpdateFirstPersonAnimations()
+    {
+        if(inventory == null) return;   
+
+        GameObject activeWeaponModel = inventory.GetActiveFirstPersonWeapon();
+        if(activeWeaponModel == null) return;
+
+        Animator newAnimator = activeWeaponModel.GetComponent<Animator>();
+        if(newAnimator != currentFPAnimator)
+        {
+            currentFPAnimator = newAnimator;
+        }
+        if (currentFPAnimator == null) return;          
+
+        bool isMoving = inputVector.magnitude > 0.1f;
+
+        currentFPAnimator.SetBool("isMoving", isMoving);
+    }
+
+    public void ChangeWeaponInventory()
+    {
+        Debug.Log("Cambiando arma de inventario");
+        //Si tienes solo una arma en WeaponSO[] slots de Inventory.cs, se añade a la lista de armas
+        //Si tienes 2 armas en WeaponSO[] slots de Inventory.cs, se cambia por la que tienes equipada y se equipa la otra
+        //tirar un raycast para ver si hay una arma en el suelo y si la hay, miramos su WEAPONSO y la añadimos a la lista de armas
+
+        if(inventory == null) return;
+        Camera playerCamera = GetComponentInChildren<Camera>();
+        if(playerCamera == null)
+        {
+            Debug.LogWarning("No se encontró la cámara del jugador.");
+        }
+
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+
+        Debug.DrawRay(ray.origin, ray.direction * 3f, Color.red, 2f);
+
+        int layerMask = ~LayerMask.GetMask("FP" + playerIndex); // Ignorar la capa de la cámara del jugador
+        RaycastHit[] hits = Physics.RaycastAll(ray, 3f, layerMask); // Raycast a todos los objetos en el rango
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Obstacle")) continue; // Ignorar el escudo
+
+            WeaponSO weaponSO = hit.collider.GetComponent<WeaponItem>()?.weaponSO;
+            if (weaponSO != null)
+            {
+                int inventorySize = inventory.GetInventorySize();
+                Debug.Log("Tamaño del inventario: " + inventorySize);
+                if (inventorySize == 1)
+                {
+                    Debug.Log("Añadiendo arma al inventario");
+                    inventory.AddWeapon(weaponSO);
+                }
+                else if (inventorySize == 2)
+                {
+                    Debug.Log("Cambiando arma de inventario por otra");
+                    inventory.ChangeWeaponInventory(weaponSO);
+                }
+                break; // Solo coger la primera arma válida
+            }
+        }
+
     }
 }

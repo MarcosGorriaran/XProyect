@@ -1,15 +1,19 @@
 using System.Collections;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Android.LowLevel;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] playerPrefabs;
     [SerializeField] private Transform[] spawnPoints;
     private GameObject[] instantiatedPlayers; //llista de los jugadores instanciados para controlar sus camaras 
-
+    public Countdown timer;
     public int maxPlayers = 0;
+    public PlayerInfo[] playerInfos;
 
 
     private void Start()
@@ -17,6 +21,11 @@ public class GameManager : MonoBehaviour
         maxPlayers = PlayerPrefs.GetInt("SelectedNumber");
         instantiatedPlayers = new GameObject[maxPlayers];
         StartCoroutine(AssignPlayers());
+    }
+
+    private void Update()
+    {
+        
     }
 
     private IEnumerator AssignPlayers()
@@ -155,7 +164,9 @@ public class GameManager : MonoBehaviour
                 cam.fieldOfView = 60;
             }
         }
-    }
+        timer.isRunning = true;
+        PlayerInfos();
+}
 
     private void SetLayerRecursively(GameObject obj, int newLayer, int fpLayer)
     {
@@ -189,4 +200,51 @@ public class GameManager : MonoBehaviour
             SetLayerRecursively(child.gameObject, newLayer, fpLayer);
         }
     }
+
+    private void PlayerInfos()
+    {
+        playerInfos = FindObjectsOfType<PlayerInfo>();
+    }
+
+    public void CheckWinner()
+    {
+        if (playerInfos.FirstOrDefault(playerInfo => playerInfo.Winner = true))
+        {
+            return;
+        }
+        foreach (PlayerInfo playerInfo in playerInfos)
+        {
+            if (playerInfo.Kills >= 20)
+            {
+                timer.isRunning = false;
+                playerInfo.Winner = true;
+                //string con el nombre del player quitandole la palabra (Clone)
+                SetVideo(playerInfo.playerName);
+            }
+        }
+    }
+
+    public void PlayerWithMoreKills()
+    {
+        PlayerInfo playerWithMoreKills = playerInfos.OrderByDescending(playerInfo => playerInfo.Kills).FirstOrDefault(); // Obtener el jugador con más kills
+        Debug.Log($"El jugador con más kills es el Player {playerWithMoreKills.playerID} con {playerWithMoreKills.Kills} kills.");
+        //mirar el nombre del jugador con más kills
+
+        playerWithMoreKills.Winner = true;
+        SetVideo(playerWithMoreKills.playerName);
+    }
+
+    public void SetVideo(string videoName)
+    {
+        PlayerPrefs.SetString("SelectedVideo", videoName);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("Cinematic");
+    }
+
+
+
+
+
+
+
 }

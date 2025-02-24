@@ -6,4 +6,6 @@ public class WeaponSO : ScriptableObject
     public GameObject weaponPrefab;
     public float weaponCooldown;
     public Vector3 positionOffset; //no implementa ahora mismo creo
+    public Vector3 rotationOffset; 
+    public Vector3 positionOffsetSpawner;
 }

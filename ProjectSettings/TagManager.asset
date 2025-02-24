@@ -16,6 +16,8 @@ TagManager:
   - Ball
   - Map
   - Enemy
+  - Bullet
+  - Obstacle
   layers:
   - Default
   - TransparentFX

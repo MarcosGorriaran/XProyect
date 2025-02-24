@@ -5,15 +5,19 @@ using System;
 public class Inventory : MonoBehaviour
 {
     [SerializeField]
-    private WeaponSO[] slots;
+    private WeaponSO[] slots = new WeaponSO[2];
     [SerializeField]  private GameObject[] firstPersonWeaponModels;
     private IWeapon activeWeapon; // Referencia al arma activa
     private Transform weaponHolder;
+    private Transform headHolder;
+    private bool hasGorrocoptero;
 
     private void Awake()
     {
         Transform rightHand = GetComponentsInChildren<Transform>()
                            .FirstOrDefault(t => t.name == "mixamorig:RightHand");
+        Transform head = GetComponentsInChildren<Transform>()
+                           .FirstOrDefault(t => t.name == "mixamorig:HeadTop_End");
         if (rightHand != null)
         {
             Debug.Log("mixamorig:RightHand encontrado: " + rightHand.name);
@@ -31,6 +35,23 @@ public class Inventory : MonoBehaviour
         else
         {
             Debug.LogError("Error: No se encontró mixamorig:RightHand en la jerarquía.");
+        }
+        if(head != null)
+        {
+            headHolder = head.Find("HeadHolder");
+
+            if (headHolder != null)
+            {
+                Debug.Log("HeadHolder encontrado correctamente en " + headHolder.name);
+            }
+            else
+            {
+                Debug.LogError("Error: No se encontró HeadHolder dentro de HeadTop_End.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Error: No se encontró mixamorig:HeadTop_End en la jerarquía.");
         }
         SetDefaultWeapon("FPTrabuco");
 
@@ -67,15 +88,22 @@ public class Inventory : MonoBehaviour
             return null;
         }
 
-        // Destruir el arma actual
+        // Instancia la nueva arma
+        Transform parentHolder = slots[slotIndex].weaponName == "FPGorrocoptero" ? headHolder : weaponHolder;
+
+        // Elimina el arma actual
         foreach (Transform child in weaponHolder)
         {
             Destroy(child.gameObject);
         }
+        foreach (Transform child in headHolder)
+        {
+            Destroy(child.gameObject);
+        }
 
-        // Instancia la nueva arma
-        GameObject weaponInstance = Instantiate(slots[slotIndex].weaponPrefab, weaponHolder);
+        GameObject weaponInstance = Instantiate(slots[slotIndex].weaponPrefab, parentHolder);
         weaponInstance.transform.localPosition = slots[slotIndex].positionOffset;
+        weaponInstance.transform.localEulerAngles = slots[slotIndex].rotationOffset;
        
         string weaponName = slots[slotIndex].weaponName;
         foreach (var model in firstPersonWeaponModels)
@@ -142,4 +170,89 @@ public class Inventory : MonoBehaviour
     {
         return slots.Count(weapon => weapon != null);
     }
+
+    public GameObject GetActiveFirstPersonWeapon()
+    {
+        foreach (var model in firstPersonWeaponModels)
+        {
+            if (model.activeSelf)
+            {
+                return model;
+            }
+        }
+        return null;
+    }
+
+    public void AddWeapon(WeaponSO weapon)
+    {
+        Debug.Log("Añadiendo arma al inventario: " + weapon.weaponName);
+        // Busca el primer slot vacío del inventario
+        int emptySlot = Array.FindIndex(slots, slot => slot == null);
+        // Si no hay slots vacíos, no se puede añadir el arma
+        if (emptySlot == -1)
+        {
+            Debug.LogWarning("No hay slots vacíos en el inventario.");
+            return;
+        }
+        // Añade el arma al primer slot vacío
+        //si el arma que se recoge ya esta en el inventario no se hace nada
+        if(slots.Contains(weapon))
+        {
+            Debug.Log("El arma que se recoge ya está en el inventario.");
+            return;
+        }
+        slots[emptySlot] = weapon;
+    }
+
+    public void ChangeWeaponInventory(WeaponSO newWeapon)
+    {
+        foreach (var WeaponModel in firstPersonWeaponModels)
+        {
+            if (WeaponModel.activeSelf) 
+            {
+                WeaponSO weaponActive = slots.FirstOrDefault(weapon => weapon.weaponName == WeaponModel.name); // Busca el arma actual en el inventario
+                //si el arma activa es la misma que la que se recoge, no se hace nada o si la que se recoge ya esta en el inventario no se hace nada
+                if(weaponActive == newWeapon)
+                {
+                    Debug.Log("El arma activa es la misma que la que se recoge.");
+                    return;
+                }
+                else if(slots.Contains(newWeapon))
+                {
+                    Debug.Log("El arma que se recoge ya está en el inventario.");
+                    return;
+                }
+                if(weaponActive != null)
+                {
+                    int slotIndex = Array.FindIndex(slots, weapon => weapon == weaponActive); // Obtiene el índice del arma actual
+                    Debug.Log(slotIndex);
+                    slots[slotIndex] = newWeapon; // Cambia el arma actual por la nueva
+                    ChangeWeapon((uint)slotIndex); // Cambia el arma en el inventario
+                }
+                else
+                {
+                    Debug.Log("No se encontró el arma activa en el inventario.");
+                }
+               
+            }
+           
+        }
+    } 
+    
+    public bool HasGorrocoptero()
+    {
+        hasGorrocoptero = false;
+
+        foreach (var weapon in slots)
+        {
+            if (weapon != null && weapon.weaponName == "FPGorrocoptero")
+            {
+                hasGorrocoptero = true;
+                break;
+            }
+        }
+        return hasGorrocoptero;
+    }
+
+    
 }

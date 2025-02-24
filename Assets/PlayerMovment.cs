@@ -80,6 +80,15 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeWeaponInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""38c39c70-2694-4ac3-9fc4-3f5485e4ec3d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -366,6 +375,17 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Recharge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7f3312d-8f50-4811-8214-3e3b2eb7f07d"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeaponInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -959,6 +979,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_ChangeWeapon = m_Player.FindAction("ChangeWeapon", throwIfNotFound: true);
         m_Player_Recharge = m_Player.FindAction("Recharge", throwIfNotFound: true);
+        m_Player_ChangeWeaponInventory = m_Player.FindAction("ChangeWeaponInventory", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1038,6 +1059,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_ChangeWeapon;
     private readonly InputAction m_Player_Recharge;
+    private readonly InputAction m_Player_ChangeWeaponInventory;
     public struct PlayerActions
     {
         private @PlayerMovment m_Wrapper;
@@ -1048,6 +1070,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @ChangeWeapon => m_Wrapper.m_Player_ChangeWeapon;
         public InputAction @Recharge => m_Wrapper.m_Player_Recharge;
+        public InputAction @ChangeWeaponInventory => m_Wrapper.m_Player_ChangeWeaponInventory;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1075,6 +1098,9 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
             @Recharge.started += instance.OnRecharge;
             @Recharge.performed += instance.OnRecharge;
             @Recharge.canceled += instance.OnRecharge;
+            @ChangeWeaponInventory.started += instance.OnChangeWeaponInventory;
+            @ChangeWeaponInventory.performed += instance.OnChangeWeaponInventory;
+            @ChangeWeaponInventory.canceled += instance.OnChangeWeaponInventory;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1097,6 +1123,9 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
             @Recharge.started -= instance.OnRecharge;
             @Recharge.performed -= instance.OnRecharge;
             @Recharge.canceled -= instance.OnRecharge;
+            @ChangeWeaponInventory.started -= instance.OnChangeWeaponInventory;
+            @ChangeWeaponInventory.performed -= instance.OnChangeWeaponInventory;
+            @ChangeWeaponInventory.canceled -= instance.OnChangeWeaponInventory;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1285,6 +1314,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnChangeWeapon(InputAction.CallbackContext context);
         void OnRecharge(InputAction.CallbackContext context);
+        void OnChangeWeaponInventory(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -85,4 +85,12 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    public void OnChangeWeaponInventory(InputAction.CallbackContext context)
+    {
+        if (playerController != null && context.performed)
+        {
+            playerController.ChangeWeaponInventory();
+        }
+    }
+
 }

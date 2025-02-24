@@ -8,7 +8,7 @@ public class Crossbow : MonoBehaviour, IWeapon
 {
     public Transform shootSpawn; // Sitio de spawn de balas
     public GameObject bulletPrefab; // Prefab de la bala
-    private Image delayAttack; // Barra de recarga
+    public Image delayAttack; // Barra de recarga
     public float autoRechargeTime = 1f; // Tiempo de recarga por bala
     public int maxBullets = 10; // Máximo de balas en el pool
     public bool shooting = true; // Permite disparar
@@ -17,6 +17,7 @@ public class Crossbow : MonoBehaviour, IWeapon
     private Image _rechargeTime;
     private Stack<GameObject> bullets; // Pool de balas
     private float time = 0f;
+    [SerializeField] private WeaponSO weaponSO;
 
     void Start()
     {
@@ -24,6 +25,7 @@ public class Crossbow : MonoBehaviour, IWeapon
         for (int i = 0; i < maxBullets; i++)
         {
             GameObject bullet = Instantiate(bulletPrefab);
+            BulletController bulletController = bullet.GetComponent<BulletController>();
             bullet.GetComponent<BulletController>().weapon = this; // Asigna el arma a la bala
             bullet.SetActive(false);
             bullets.Push(bullet);
@@ -56,9 +58,17 @@ public class Crossbow : MonoBehaviour, IWeapon
             Debug.Log("El arma no está recargada o está recargando.");
             return;
         }
+        GameObject shooter = GetComponentInParent<Player>().gameObject;
 
+        if (shooter != null)
+        {
+            Debug.LogError("Se encontró el jugador que disparó.");
+        }
         GameObject bullet = bullets.Pop();
+        BulletController bulletController = bullet.GetComponent<BulletController>();
         bullet.GetComponent<BulletController>().weapon = this; // Asigna el arma a la bala
+        bulletController.shooter = shooter; // Asigna el jugador que disparó la bala
+
         bullet.transform.position = shootSpawn.position;
         bullet.transform.rotation = shootSpawn.rotation;
         bullet.SetActive(true);
@@ -74,20 +84,10 @@ public class Crossbow : MonoBehaviour, IWeapon
 
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); // Centro de la pantalla
         RaycastHit hit;
-
-        Vector3 targetPoint;
+        Vector3 targetPoint = Physics.Raycast(ray, out hit) ? hit.point : ray.GetPoint(1000);
 
         Debug.DrawRay(ray.origin, ray.direction * 1000, Color.red, 2f);
-
-        if (Physics.Raycast(ray, out hit)) // Si golpea algo
-        {
-            targetPoint = hit.point;
-        }
-        else
-        {
-            targetPoint = ray.GetPoint(1000); // Si no golpea nada, apunta lejos (1000 unidades adelante)
-        }
-
+      
         Vector3 direction = (targetPoint - shootSpawn.position).normalized;
 
         rb.velocity = direction * 20f; // Ajusta la velocidad de la bala
@@ -184,5 +184,10 @@ public class Crossbow : MonoBehaviour, IWeapon
     {
         delayAttack = image;
         delayAttack.fillAmount = 1f;
+    }
+
+    public WeaponSO GetWeaponSO()
+    {
+        return weaponSO;
     }
 }

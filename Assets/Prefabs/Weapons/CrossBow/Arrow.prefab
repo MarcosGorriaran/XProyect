@@ -97,10 +97,9 @@ GameObject:
   - component: {fileID: 6492897778355255536}
   - component: {fileID: -6126580354559484793}
   - component: {fileID: 7830283192707814737}
-  - component: {fileID: 9075118519739578406}
   m_Layer: 0
   m_Name: Arrow
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,7 +114,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2999999, y: 0.30000004, z: 0.29999998}
+  m_LocalScale: {x: 0.061274003, y: 0.06127403, z: 0.06127402}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7301756511209451345}
@@ -133,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc723e4a45364d4c8f88feddb007ab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shooter: {fileID: 0}
 --- !u!54 &-6126580354559484793
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -155,7 +155,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -175,22 +175,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9075118519739578406
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5156567682370186993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52f1f0e7df4a248419d0e9bf9a8675f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 15

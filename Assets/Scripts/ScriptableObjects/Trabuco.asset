@@ -16,3 +16,4 @@ MonoBehaviour:
   weaponPrefab: {fileID: 9148056146776401167, guid: 564f2e9d7186c6f4abcbbe5024ddbcff, type: 3}
   weaponCooldown: 0
   positionOffset: {x: 0, y: 0, z: 0}
+  positionOffsetSpawner: {x: -0.272, y: 0, z: 0}

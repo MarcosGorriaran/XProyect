@@ -946,6 +946,8 @@ GameObject:
   m_Component:
   - component: {fileID: 261649071722302085}
   - component: {fileID: 2584446210545924182}
+  - component: {fileID: 3300798565731753536}
+  - component: {fileID: 4900161889929604001}
   m_Layer: 0
   m_Name: Crossbow
   m_TagString: Untagged
@@ -988,6 +990,41 @@ MonoBehaviour:
   maxBullets: 10
   shooting: 1
   duringRecharge: 0
+  weaponSO: {fileID: 11400000, guid: 1990bf7d222e39341823e99fd533ac8f, type: 2}
+--- !u!65 &3300798565731753536
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5711750216059928585}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4900161889929604001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5711750216059928585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec1aae90735a3a49b33ccdab69ee88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSO: {fileID: 11400000, guid: 1990bf7d222e39341823e99fd533ac8f, type: 2}
 --- !u!1 &6736157625953530664
 GameObject:
   m_ObjectHideFlags: 0
