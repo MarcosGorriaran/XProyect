@@ -15,15 +15,12 @@ public class RegisterManager : AcountManager
 {
     const string WrongRepeatPassword = "Deben repetirse los campos 'Contraseña' y 'Repetir contraseña'";
     const string SuccesfulRegister = "El proceso de registro se ha completado y ya tiene una sesion activa";
-    const string BadAPIConection = "No ha sido posible conectarse con la API";
     const string RepeatPasswordEmpty = "Repetir contraseña no puede estar vacio";
     
     [SerializeField]
     TMP_InputField _repeatPassword;
     [SerializeField]
     TMP_Text _repeatPasswordErrorField;
-    [SerializeField]
-    Button _registerButton;
     
 
     public override void ManagerAction()
@@ -100,6 +97,7 @@ public class RegisterManager : AcountManager
             {
                 Session = acountInfo;
                 WriteSuccess(SuccesfulRegister);
+                AttemptExit();
             }
         }
         catch (HttpRequestException)
@@ -111,16 +109,12 @@ public class RegisterManager : AcountManager
     }
     protected override void DesactivateInputFields()
     {
-        Username.interactable = false;
-        Password.interactable = false;
+        base.DesactivateInputFields();
         _repeatPassword.interactable = false;
-        _registerButton.interactable = false;
     }
     protected override void ActivateInputFields()
     {
-        Username.interactable = true;
-        Password.interactable = true;
+        base.ActivateInputFields();
         _repeatPassword.interactable = true;
-        _registerButton.interactable = true;
     }
 }

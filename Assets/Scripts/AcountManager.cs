@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProyectXAPI.Models;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class AcountManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public abstract class AcountManager : MonoBehaviour
     const string RepeatedUsernameTranslation = "Ya hay una cuenta con el mismo nombre";
     const string UsernameEmpty = "El nombre de usuario no puede estar vacio";
     const string PasswordEmpty = "La contraseña no puede estar vacio";
+    protected const string BadAPIConection = "No ha sido posible conectarse con la API";
     private static Dictionary<string, string> _errorTranslator = new Dictionary<string, string>() 
     {
         {WrongLogin,WrongLoginTranslation },
@@ -38,6 +40,8 @@ public abstract class AcountManager : MonoBehaviour
     TMP_InputField _password;
     [SerializeField]
     TMP_Text _passwordErrorField;
+    [SerializeField]
+    Button _actionButton;
 
 
     public static Acount Session
@@ -141,7 +145,30 @@ public abstract class AcountManager : MonoBehaviour
         }
     }
     protected abstract IEnumerator SendInfo(Acount acount);
-    protected abstract void DesactivateInputFields();
-    protected abstract void ActivateInputFields();
+    protected virtual void DesactivateInputFields()
+    {
+        Username.interactable = false;
+        Password.interactable = false;
+        _actionButton.interactable = false;
+    }
+    protected virtual void ActivateInputFields()
+    {
+        Username.interactable = true;
+        Password.interactable = true;
+        _actionButton.interactable = true;
+    }
     public abstract void ManagerAction();
+    public static void CloseSession()
+    {
+        Session = null;
+    }
+    protected void AttemptExit()
+    {
+        MainMenu exitManager = FindAnyObjectByType<MainMenu>();
+        if (exitManager != null)
+        {
+            FindAnyObjectByType<MainMenu>().OnButtonClickRegisterRegister();
+        }
+        
+    }
 }
