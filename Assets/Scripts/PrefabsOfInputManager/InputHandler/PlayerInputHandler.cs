@@ -34,10 +34,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        Vector2 moveInput = context.ReadValue<Vector2>();
+        Debug.Log("Move input: " + moveInput);
         if (playerController != null)
         {
-            Debug.Log("OnMove");
-            playerController.SetInputVector(context.ReadValue<Vector2>());
+            playerController.SetInputVector(moveInput);
         }
     }
 
@@ -81,6 +82,14 @@ public class PlayerInputHandler : MonoBehaviour
             float direction = context.ReadValue<float>();
 
             playerController.ChangeWeapon(direction);
+        }
+    }
+
+    public void OnChangeWeaponInventory(InputAction.CallbackContext context)
+    {
+        if (playerController != null && context.performed)
+        {
+            playerController.ChangeWeaponInventory();
         }
     }
 

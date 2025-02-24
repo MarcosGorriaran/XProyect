@@ -146,6 +146,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 52b4bb89-991e-41e5-9dfa-7b299d81b0bd
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 82c997d0-4834-4666-b030-1b48bc76fc42
+    m_ActionName: Player/Jump[/XInputControllerWindows/buttonSouth,/DualShock4GamepadHID/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ce51a881-6e1c-402a-9353-07f671567a97
+    m_ActionName: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder,/DualShock4GamepadHID/leftShoulder,/XInputControllerWindows/rightShoulder,/DualShock4GamepadHID/rightShoulder,/Keyboard/1]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cc2c7adb-53b9-46ce-9bcb-2365e7700603
+    m_ActionName: Player/Recharge[/XInputControllerWindows/buttonWest,/DualShock4GamepadHID/buttonWest,/Keyboard/r]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 38c39c70-2694-4ac3-9fc4-3f5485e4ec3d
+    m_ActionName: Player/ChangeWeaponInventory[/XInputControllerWindows/buttonEast,/DualShock4GamepadHID/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: UI
@@ -166,7 +182,8 @@ MonoBehaviour:
   playerIndex: 0
   characterButtons: []
   playerPrefabs:
-  - {fileID: 1725916656542622295, guid: ecfae5aac02f4eb4b8575338d451d7fa, type: 3}
-  - {fileID: 1725916656542622295, guid: 567247313d117c348a8a46589fb68527, type: 3}
-  - {fileID: 1725916656542622295, guid: d2953d47f5f05c342a5b4622c63e28f4, type: 3}
+  - {fileID: 4563796121368738451, guid: ab2800fc64570874bbcacadd5fb59a8c, type: 3}
+  - {fileID: 8465006440236156502, guid: 20ec85dc26330624d88460ac582d74e9, type: 3}
+  - {fileID: 7380058075971043494, guid: 4ec78b23d959c5c4da930b0266a8a5df, type: 3}
+  - {fileID: 4623602626096900458, guid: 25c1082e5ce867b4d9e9bc4ea0d0c91a, type: 3}
   instancePosition: {fileID: 0}

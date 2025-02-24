@@ -77,6 +77,6 @@ public class SkinPickerManager : MonoBehaviour
 
     private void StartGame()
     { 
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Scenary");
     }
 }

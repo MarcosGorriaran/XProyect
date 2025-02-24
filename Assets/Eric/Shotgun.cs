@@ -2,170 +2,191 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 
-public class Shotgun : MonoBehaviour , IWeapon
+public class Shotgun : MonoBehaviour, IWeapon
 {
-    public Transform shootSpawn1;
-    public Transform shootSpawn2;
-    public Transform shootSpawn3;
-    public Transform shootSpawn4;
-    public Transform shootSpawn5;
-
+    public Transform[] shootSpawns = new Transform[9]; // 9 puntos de disparo (cañones de la escopeta)
     public GameObject bulletPrefab; // Prefab de la bala
-    private Image delayAttack;       // Barra de recarga
+    public Image delayAttack; // Barra de recarga
 
-    public float autoRechargeTime = 1f; // Tiempo de recarga por bala
-    public int maxBullets = 10;         // Máximo de balas en el pool
-    public bool shooting = true;       // Permite disparar
-    public bool duringRecharge = false;
+    public float autoRechargeTime = 1f; // Tiempo de recarga
+    public int maxBullets = 10; // Máximo de balas en el pool
+    public int pelletsPerShot = 9; // Cantidad de perdigones por disparo
+    public float bulletSpeed = 15f; // Velocidad de las balas
 
-    private Stack<GameObject> bullets; // Pool de balas
+    private Stack<GameObject> bullets;
+    private bool shooting = true;
+    private bool duringRecharge = false;
+    private bool isRecharged = true;
     private float time = 0f;
+    [SerializeField] WeaponSO weaponSO;
 
-
-    void Start ()
+    void Start()
     {
         bullets = new Stack<GameObject>();
         for (int i = 0; i < maxBullets; i++)
         {
             GameObject bullet = Instantiate(bulletPrefab);
-            bullet.GetComponent<BulletController>().weapon = this; // Asigna el arma a la bala
+            bullet.GetComponent<BulletController>().weapon = this;
             bullet.SetActive(false);
             bullets.Push(bullet);
         }
-        if (delayAttack != null)
-        {
-            Debug.Log("Barra de recarga asignada.");
-        }
     }
 
-    public void UpdateDelayAttack()
+    public bool IsRecharged
     {
-        // Actualiza la barra de recarga
-        if (duringRecharge)
-        {
-            time += Time.deltaTime;
-        }
-        else
-        {
-            time = 0;
-        }
-        delayAttack.fillAmount = time / autoRechargeTime;
-
+        get { return isRecharged; }
+        set { isRecharged = value; }
     }
 
     public void Shoot()
     {
-        Transform[] shootSpawns = { shootSpawn1, shootSpawn2, shootSpawn3, shootSpawn4, shootSpawn5 };
-
-        int bulletsToShoot = Mathf.Min(5, bullets.Count); // Máximo de 5 balas o menos si no hay suficientes
-
-        for (int i = 0; i < bulletsToShoot; i++)
+        if (bullets.Count < pelletsPerShot)
         {
-            Transform shootSpawn = shootSpawns[i];
+            Debug.Log("No hay suficientes balas para disparar.");
+            return;
+        }
+
+        Camera playerCamera = GetComponentInParent<PlayerController>().GetComponentInChildren<Camera>();
+        if (playerCamera == null)
+        {
+            Debug.LogError("No se encontró la cámara del jugador.");
+            return;
+        }
+
+        GameObject shooter = GetComponentInParent<Player>().gameObject; 
+        if (shooter == null)
+        {
+            Debug.LogError("No se encontró el jugador que disparo.");
+        }
+
+        // Obtenemos el centro de la pantalla
+        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        Vector3 targetPoint = Physics.Raycast(ray, out hit) ? hit.point : ray.GetPoint(1000);
+
+        // Disparar los perdigones
+        for (int i = 0; i < pelletsPerShot; i++)
+        {
+            if (bullets.Count == 0) break;
+
             GameObject bullet = bullets.Pop();
-            bullet.GetComponent<BulletController>().weapon = this; // Asigna el arma a la bala
-            bullet.transform.position = shootSpawn.position;
-            bullet.transform.rotation = shootSpawn.rotation;
+            BulletController bulletController = bullet.GetComponent<BulletController>();
+            bullet.GetComponent<BulletController>().weapon = this;
+            bulletController.shooter = shooter;
+
+            bullet.transform.position = shootSpawns[i].position; // Usamos cada punto de disparo
             bullet.SetActive(true);
 
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            rb.velocity = shootSpawn.forward * 10;
+            Vector3 direction = (targetPoint - shootSpawns[i].position).normalized; // Dirección desde cada punto de disparo
+            rb.velocity = direction * bulletSpeed; // Establecemos la velocidad en la dirección calculada
         }
 
-        if (bullets.Count == 0)
+        shooting = false;
+        if (delayAttack != null)
         {
-            Debug.Log("No hay más balas en el pool.");
-        }
-    }
-
-
-    public void InstantieateBullet ()
-    {
-        if (bullets.Count >= 5)
-        {
-            Shoot ();
-        }
-        else
-        {
-            Debug.Log ("No hay suficientes balas disponibles. Recarga o espera...");
+            delayAttack.fillAmount = 0;
         }
     }
 
     public void Attack()
     {
-        if (!shooting || delayAttack == null || delayAttack.fillAmount == 0)
+        // Solo se puede disparar si el arma está recargada y no está en proceso de recarga
+        if (!isRecharged || duringRecharge)
         {
-            Debug.Log("El arma está recargando. No puedes disparar.");
+            Debug.Log("El arma no está recargada o está recargando.");
             return;
         }
 
-        InstantieateBullet();
-        shooting = false;
-        delayAttack.fillAmount = 0;
+        Shoot();
+        isRecharged = false;  // El arma ya no está recargada después de disparar
+        Debug.Log("Disparo realizado.");
     }
 
     public void Recharge()
     {
-        if (!duringRecharge)
+        // Solo se puede recargar si no está en proceso de recarga
+        if (duringRecharge)
         {
-            StartCoroutine(RechargeBullets());
+            Debug.Log("El arma ya está recargando.");
+            return;
         }
-    }
 
-    public void DisactiveBullet (GameObject bullet)
-    {
-        bullet.SetActive (false);
-        if (!bullets.Contains (bullet)) // Evita duplicados en el pool
-        {
-            bullets.Push (bullet);
-        }
+        // Inicia la recarga
+        StartCoroutine(RechargeBullets());
+        isRecharged = false;  // Aseguramos que al empezar la recarga, el arma no esté recargada
+        Debug.Log("Recargando el arma...");
     }
 
     private IEnumerator RechargeBullets()
     {
-        Debug.Log("Recargando balas...");
+        // Marca que está recargando
         duringRecharge = true;
+        time = 0f;
 
-        for (int i = 0; i < 5; i++) // Recarga hasta 5 balas
+        // Proceso de recarga
+        while (time < autoRechargeTime)
         {
-            if (bullets.Count < maxBullets)
+            time += Time.deltaTime;
+            if (delayAttack != null)
             {
-                yield return new WaitForSeconds(autoRechargeTime / 5);
-
-                // Crear una nueva bala si el pool no está lleno
-                GameObject bullet = Instantiate(bulletPrefab);
-                bullet.SetActive(false);
-                bullets.Push(bullet);
+                delayAttack.fillAmount = time / autoRechargeTime; // Actualiza la barra de recarga
             }
-            else
-            {
-                Debug.Log("El pool ya está lleno. No se pueden añadir más balas.");
-                break;
-            }
-
-            // Actualizar la barra de recarga
-            delayAttack.fillAmount = (float)(i + 1) / 5f;
+            yield return null;
         }
 
-        shooting = true;
-        duringRecharge = false;
-        Debug.Log("Recarga completa: 5 balas añadidas.");
+        // Añade balas al pool, si es necesario
+        if (bullets.Count < maxBullets)
+        {
+            GameObject bullet = Instantiate(bulletPrefab);
+            bullet.SetActive(false);
+            bullets.Push(bullet);
+        }
+
+        shooting = true;  // El arma ahora puede disparar
+        duringRecharge = false;  // Termina la recarga
+        isRecharged = true;  // El arma está recargada
+
+        // Restaura la barra de recarga a su valor máximo
+        if (delayAttack != null)
+        {
+            delayAttack.fillAmount = 1f;
+        }
+
+        Debug.Log("Recarga completada.");
     }
 
-
-
-
-    public int GetPoolCount ()
+    public void DisactiveBullet(GameObject bullet)
     {
-        return bullets.Count;
+        bullet.SetActive(false);
+        if (!bullets.Contains(bullet))
+        {
+            bullets.Push(bullet);
+        }
     }
 
     public void SetDelayAttackImage(Image image)
     {
         delayAttack = image;
-        delayAttack.fillAmount = 1f; 
+        delayAttack.fillAmount = 1f;
     }
 
+    public int GetPoolCount()
+    {
+        return bullets.Count;
+    }
+
+    public void SetPoolCount(int count)
+    {
+        while (bullets.Count > count)
+        {
+            bullets.Pop();
+        }
+    }
+
+    public WeaponSO GetWeaponSO()
+    {
+        return weaponSO;
+    }
 }

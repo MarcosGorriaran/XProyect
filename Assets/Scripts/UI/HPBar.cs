@@ -6,37 +6,56 @@ using System.Collections;
 public class HPBar : MonoBehaviour
 {
     public HPManager trackedHp;
-    private Slider _slider;
+    public Image hpFill;
     public Image damageImage;
     public float duration = 0.2f;
+
+    private float maxHp;    
 
     private void Start ()
     {
         trackedHp.onHPChange += UpdateBar;
-        _slider = GetComponent<Slider> ();
-        _slider.maxValue = trackedHp.GetMaxHp ();
-        _slider.minValue = 0;
-        _slider.value = trackedHp.GetHp ();
-        damageImage.color = new Color (1, 1, 1, 0);
+        trackedHp.onRevive += ResetBar; // Escuchar el evento de revivir
+
+        maxHp = trackedHp.GetMaxHp(); // Obtener la vida m�xima al inicio
+        hpFill.fillAmount = 1f; // La barra empieza llena
+        damageImage.color = new Color(1, 1, 1, 0); // Oculta la imagen de da�o al inicio
     }
 
-    private void UpdateBar (float damage)
+    private void UpdateBar(float damage)
     {
-        StopAllCoroutines ();
-        StartCoroutine (SmoothUpdate (trackedHp.GetHp ()));
+        StopAllCoroutines(); // Detiene animaciones previas
+        float newFill = trackedHp.GetHp() / maxHp; // Calcula el porcentaje de vida restante
+        StartCoroutine(SmoothUpdate(newFill)); // Hace una animaci�n suave para reducir la barra
 
-        if (trackedHp.GetHp () < trackedHp.GetMaxHp () / 2)
+        if (trackedHp.GetHp() < maxHp / 2) // Si la vida es menor al 50%
         {
-            StartCoroutine (FadeEffect ()); // Inicia el parpadeo
+            StartCoroutine(FadeEffect()); // Iniciar parpadeo
         }
         else
         {
-            StopCoroutine (FadeEffect ());
-            damageImage.color = new Color (1, 1, 1, 0); // Oculta la imagen
+            StopCoroutine(FadeEffect()); // Detener parpadeo si la vida sube
+            damageImage.color = new Color(1, 1, 1, 0); // Ocultar imagen de da�o
         }
     }
 
-    private IEnumerator FadeEffect ()
+    private IEnumerator SmoothUpdate(float targetFill)
+    {
+        float startFill = hpFill.fillAmount;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            hpFill.fillAmount = Mathf.Lerp(startFill, targetFill, elapsedTime / duration);
+            yield return null;
+        }
+
+        hpFill.fillAmount = targetFill;
+
+    }
+
+    private IEnumerator FadeEffect()
     {
         bool increasing = true;
         float minAlpha = 0.2f;
@@ -52,29 +71,20 @@ public class HPBar : MonoBehaviour
             while (elapsedTime < fadeSpeed)
             {
                 elapsedTime += Time.deltaTime;
-                float newAlpha = Mathf.Lerp (startAlpha, targetAlpha, elapsedTime / fadeSpeed);
-                damageImage.color = new Color (1, 1, 1, newAlpha);
+                float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeSpeed);
+                damageImage.color = new Color(1, 1, 1, newAlpha);
                 yield return null;
             }
 
-            increasing = !increasing; // Alternar entre subir y bajar opacidad
+            increasing = !increasing;
         }
     }
 
-
-
-    private IEnumerator SmoothUpdate (float targetValue)
+    private void ResetBar(GameObject player)
     {
-        float startValue = _slider.value;
-        float elapsedTime = 0f;
-
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.unscaledDeltaTime; 
-            _slider.value = Mathf.Lerp (startValue, targetValue, elapsedTime / duration);
-            yield return null;
-        }
-
-        _slider.value = targetValue;
+        StopAllCoroutines(); // Detener cualquier animaci�n previa
+        hpFill.fillAmount = 1f; // Reiniciar la barra de vida a 100%
+        damageImage.color = new Color(1, 1, 1, 0); // Ocultar la imagen de da�o
     }
+
 }

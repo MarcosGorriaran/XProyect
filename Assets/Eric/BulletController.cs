@@ -2,15 +2,29 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    public float bulletSpeed = 10f;
     public IWeapon weapon;
+    public GameObject shooter;// <-- Jugador que disparó la bala
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Enemy") && weapon != null)
+        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Enemy"))
         {
-            weapon.DisactiveBullet(gameObject);
-            Debug.Log("Bala impactó al enemigo y fue devuelta.");
+            if (weapon != null)
+            {
+                weapon.DisactiveBullet(gameObject);
+            }
+            Debug.Log("Bala impactó contra un obstáculo/enemigo y fue devuelta.");
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            HPManager enemyHP = collision.gameObject.GetComponent<HPManager>();
+            if (enemyHP != null)
+            {
+                float damage = 10;
+                enemyHP.Hurt(damage, shooter); // Pasa el atacante como argumento
+                Debug.Log("Bala impactó contra un enemigo y le hizo daño.");
+            }
         }
     }
 
@@ -21,5 +35,6 @@ public class BulletController : MonoBehaviour
             weapon.DisactiveBullet(gameObject);
             Debug.Log("Bala salió del mapa y fue devuelta.");
         }
+
     }
 }

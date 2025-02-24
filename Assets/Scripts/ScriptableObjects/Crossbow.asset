@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17292ecaf75641f45ac72b3549b0c400, type: 3}
   m_Name: Crossbow
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 82916083182271891, guid: da648fb0993babb4790ba3bea327c7d5, type: 3}
+  weaponName: FPCrossbow
+  weaponPrefab: {fileID: 5711750216059928585, guid: 5b0a07d84220c1446beaca2efe800033, type: 3}
   weaponCooldown: 0
+  positionOffset: {x: -0.1689999, y: 0.02499998, z: -0.03300005}
