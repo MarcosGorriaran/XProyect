@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-[RequireComponent(typeof(Slider))]
+[RequireComponent (typeof (Slider))]
 public class HPBar : MonoBehaviour
 {
     public HPManager trackedHp;
@@ -12,21 +12,21 @@ public class HPBar : MonoBehaviour
 
     private float maxHp;    
 
-    private void Start()
+    private void Start ()
     {
         trackedHp.onHPChange += UpdateBar;
         trackedHp.onRevive += ResetBar; // Escuchar el evento de revivir
 
-        maxHp = trackedHp.GetMaxHp(); // Obtener la vida máxima al inicio
+        maxHp = trackedHp.GetMaxHp(); // Obtener la vida mï¿½xima al inicio
         hpFill.fillAmount = 1f; // La barra empieza llena
-        damageImage.color = new Color(1, 1, 1, 0); // Oculta la imagen de daño al inicio
+        damageImage.color = new Color(1, 1, 1, 0); // Oculta la imagen de daï¿½o al inicio
     }
 
     private void UpdateBar(float damage)
     {
         StopAllCoroutines(); // Detiene animaciones previas
         float newFill = trackedHp.GetHp() / maxHp; // Calcula el porcentaje de vida restante
-        StartCoroutine(SmoothUpdate(newFill)); // Hace una animación suave para reducir la barra
+        StartCoroutine(SmoothUpdate(newFill)); // Hace una animaciï¿½n suave para reducir la barra
 
         if (trackedHp.GetHp() < maxHp / 2) // Si la vida es menor al 50%
         {
@@ -35,7 +35,7 @@ public class HPBar : MonoBehaviour
         else
         {
             StopCoroutine(FadeEffect()); // Detener parpadeo si la vida sube
-            damageImage.color = new Color(1, 1, 1, 0); // Ocultar imagen de daño
+            damageImage.color = new Color(1, 1, 1, 0); // Ocultar imagen de daï¿½o
         }
     }
 
@@ -52,6 +52,7 @@ public class HPBar : MonoBehaviour
         }
 
         hpFill.fillAmount = targetFill;
+
     }
 
     private IEnumerator FadeEffect()
@@ -81,9 +82,9 @@ public class HPBar : MonoBehaviour
 
     private void ResetBar(GameObject player)
     {
-        StopAllCoroutines(); // Detener cualquier animación previa
+        StopAllCoroutines(); // Detener cualquier animaciï¿½n previa
         hpFill.fillAmount = 1f; // Reiniciar la barra de vida a 100%
-        damageImage.color = new Color(1, 1, 1, 0); // Ocultar la imagen de daño
+        damageImage.color = new Color(1, 1, 1, 0); // Ocultar la imagen de daï¿½o
     }
 
 }
