@@ -10,11 +10,11 @@ public class SelectableAddProfile : SelectableBox
 
     public override void SelectAction()
     {
-        SelectedAddProfile.Invoke();
+        SelectedAddProfile?.Invoke();
     }
 
     public override void UseAction()
     {
-        UseAddProfile.Invoke();
+        UseAddProfile?.Invoke();
     }
 }
