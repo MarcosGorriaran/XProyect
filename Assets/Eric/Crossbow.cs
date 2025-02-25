@@ -14,7 +14,6 @@ public class Crossbow : MonoBehaviour, IWeapon
     public bool shooting = true; // Permite disparar
     public bool duringRecharge = false;
     private bool isRecharged = true;
-    private Image _rechargeTime;
     private Stack<GameObject> bullets; // Pool de balas
     private float time = 0f;
     [SerializeField] private WeaponSO weaponSO;
@@ -111,6 +110,15 @@ public class Crossbow : MonoBehaviour, IWeapon
         InstantieateBullet();
         isRecharged = false;  // El arma ya no está recargada después de disparar
         Debug.Log("Disparo realizado.");
+        if (delayAttack != null)
+        {
+            delayAttack.fillAmount = 0f; // Poner en 0 al disparar
+        }
+        else
+        {
+            Debug.LogError("No se encontró la barra de recarga.");
+        }
+
     }
 
     public void Recharge()

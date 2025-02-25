@@ -7,7 +7,7 @@ public class Countdown : MonoBehaviour
 {
     //texto TMP que mostrará el tiempo restante
     public TextMeshProUGUI timerText;
-    private float timeRemaining = 2 * 10;
+    private float timeRemaining = 10 * 60;
     public bool isRunning = false;
     private bool isFlashing = false;
     public GameManager gameManager;

@@ -84,10 +84,6 @@ public class Shotgun : MonoBehaviour, IWeapon
         }
 
         shooting = false;
-        if (delayAttack != null)
-        {
-            delayAttack.fillAmount = 0;
-        }
     }
 
     public void Attack()
@@ -102,6 +98,14 @@ public class Shotgun : MonoBehaviour, IWeapon
         Shoot();
         isRecharged = false;  // El arma ya no está recargada después de disparar
         Debug.Log("Disparo realizado.");
+        if (delayAttack != null)
+        {
+            delayAttack.fillAmount = 0f;
+        }
+        else
+        {
+            Debug.LogError("No se encontró la barra de recarga.");
+        }
     }
 
     public void Recharge()
@@ -137,7 +141,7 @@ public class Shotgun : MonoBehaviour, IWeapon
         }
 
         // Añade balas al pool, si es necesario
-        if (bullets.Count < maxBullets)
+        while (bullets.Count < maxBullets)
         {
             GameObject bullet = Instantiate(bulletPrefab);
             bullet.SetActive(false);

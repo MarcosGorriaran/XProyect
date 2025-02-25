@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Linq;
+using TMPro;
 
 public class ButtonNavigator : MonoBehaviour
 {
@@ -77,10 +78,10 @@ public class ButtonNavigator : MonoBehaviour
         // Eliminar resaltado de todos los botones
         foreach (var button in buttons)
         {
-            button.GetComponent<Image>().color = Color.white; // Color base
+            button.GetComponentInChildren<TMP_Text>().color = Color.white; // Color por defecto
         }
 
-        // Resaltar el botón seleccionado
-        buttons[newSelection].GetComponent<Image>().color = Color.yellow; // Color de selección
+        // Resaltar eltexto del boton seleccionado en hexadecimal
+        buttons[newSelection].GetComponentInChildren<TMP_Text>().color = new Color(1f, 0.753631f, 0f); 
     }
 }

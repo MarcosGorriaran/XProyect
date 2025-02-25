@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     public int maxPlayers = 0;
     public PlayerInfo[] playerInfos;
 
-
     private void Start()
     {
         maxPlayers = PlayerPrefs.GetInt("SelectedNumber");
@@ -23,10 +22,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(AssignPlayers());
     }
 
-    private void Update()
-    {
-        
-    }
 
     private IEnumerator AssignPlayers()
     {
@@ -40,7 +35,6 @@ public class GameManager : MonoBehaviour
                 Debug.LogWarning($"No se encontr? configuraci?n para Player {i}");
                 continue;
             }
-
             //Instanciar el player amb la skin
 
             GameObject playerInstance = Instantiate(playerPrefabs[skin], spawnPoints[i].position, spawnPoints[i].rotation);
@@ -140,7 +134,8 @@ public class GameManager : MonoBehaviour
                 instantiatedPlayers[0].GetComponentInChildren<Camera>().rect = new Rect(0, 0.5f, 0.5f, 0.5f);
                 instantiatedPlayers[1].GetComponentInChildren<Camera>().rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                 instantiatedPlayers[2].GetComponentInChildren<Camera>().rect = new Rect(0, 0, 0.5f, 0.5f);
-                newAspect = defaultAspect * 2;
+                newAspect = defaultAspect;
+                ScaleCanvas();
                 break;
 
             case 4:
@@ -149,6 +144,7 @@ public class GameManager : MonoBehaviour
                 instantiatedPlayers[2].GetComponentInChildren<Camera>().rect = new Rect(0, 0, 0.5f, 0.5f);
                 instantiatedPlayers[3].GetComponentInChildren<Camera>().rect = new Rect(0.5f, 0, 0.5f, 0.5f);
                 newAspect = defaultAspect;
+                ScaleCanvas();
                 break;
 
             default:
@@ -167,6 +163,26 @@ public class GameManager : MonoBehaviour
         timer.isRunning = true;
         PlayerInfos();
 }
+
+    private void ScaleCanvas()
+    {
+        foreach (var player in instantiatedPlayers)
+        {
+            if (player != null)
+            {
+                Canvas canvas = player.GetComponentInChildren<Canvas>();
+                if (canvas != null)
+                {
+                    //coger el panel hijo del canvas
+                    Debug.LogError("ResizeCanvas");
+                    //buscar un panel en el child de canvas
+                    Transform panel = canvas.transform.Find("Container");
+                    panel.transform.localScale = new Vector3(1f, 2f, 0.5f);
+
+                }
+            }
+        }
+    }
 
     private void SetLayerRecursively(GameObject obj, int newLayer, int fpLayer)
     {

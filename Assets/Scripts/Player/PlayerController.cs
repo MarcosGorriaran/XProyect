@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
         inventory.ChangeWeapon((uint)currentWeaponIndex);
         currentWeapon = inventory.GetActiveWeapon();
 
-        Image delayAttackImage = transform.parent.GetComponentInChildren<Canvas>().GetComponentInChildren<Image>();
+        Image delayAttackImage = transform.parent.Find("Canvas/Container").Find("RechargeTime").GetComponent<Image>(); 
         if (delayAttackImage != null)
         {
             if (currentWeapon is Crossbow crossbow)
