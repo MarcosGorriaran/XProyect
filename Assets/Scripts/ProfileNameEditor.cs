@@ -11,6 +11,17 @@ public class ProfileNameEditor : MonoBehaviour
     [SerializeField]
     ProfileScrollableList _scrollableList;
     SelectableProfile _selectedProfile;
+    public void ExecuteAction()
+    {
+        if (_selectedProfile != null)
+        {
+            ExecuteEdition();
+        }
+        else
+        {
+            ExecuteCreation();
+        }
+    }
     public void EditProfile(SelectableProfile boxProfile)
     {
         _textEditor.text = boxProfile.RepresentingProfile.ProfileName;
@@ -20,6 +31,7 @@ public class ProfileNameEditor : MonoBehaviour
     {
         _selectedProfile.RepresentingProfile.ProfileName = _textEditor.text;
         _selectedProfile.UpdateProfile(_selectedProfile.RepresentingProfile);
+        gameObject.SetActive(false);
     }
     public void CreateProfile()
     {

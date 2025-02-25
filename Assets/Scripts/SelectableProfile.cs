@@ -26,6 +26,13 @@ public class SelectableProfile : SelectableBox
             BoxName.text = value.ProfileName;
         }
     }
+    public APIConectionSO ConectionSO
+    {
+        set
+        {
+            _conectionSO = value;
+        }
+    }
     public override void SelectAction()
     {
         SelectedProfileChanged?.Invoke(_representingProfile);
@@ -45,6 +52,7 @@ public class SelectableProfile : SelectableBox
         {
             BaseAddress = new Uri(_conectionSO.URL)
         });
+        profile.Creator = AcountManager.Session;
         TaskAwaiter<ResponseDTO<object>> awaiter = controller.UpdateAsync(profile).GetAwaiter();
         yield return new WaitUntil(()=>awaiter.IsCompleted);
         try

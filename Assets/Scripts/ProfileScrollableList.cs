@@ -74,10 +74,14 @@ public class ProfileScrollableList : MonoBehaviour
         {
             ResponseDTO<Profile[]> responseDTO = awaiter.GetResult();
             _profiles = responseDTO.Data.ToList();
-            InstantiateNewBox(_selectableAddProfilePrefab);
+            SelectableBox box = InstantiateNewBox(_selectableAddProfilePrefab);
+            if(box.TryGetComponent(out Button buton))
+            {
+                buton.onClick.AddListener(CreateProcess);
+            }
             foreach(Profile profile in _profiles)
             {
-                InstantiateNewBox(profile);
+                InstantiateNewBox(profile).ConectionSO = _conectionSO;
             }
         }
         catch (HttpRequestException)
@@ -85,7 +89,7 @@ public class ProfileScrollableList : MonoBehaviour
 
         }
     }
-    private void InstantiateNewBox(SelectableBox box)
+    private SelectableBox InstantiateNewBox(SelectableBox box)
     {
         SelectableBox actualBox = Instantiate(box, transform.parent);
         actualBox.transform.parent = transform;
@@ -107,8 +111,9 @@ public class ProfileScrollableList : MonoBehaviour
         }
         
         _selectableBoxes.Add(actualBox);
+        return actualBox;
     }
-    private void InstantiateNewBox(Profile representingProfile)
+    private SelectableProfile InstantiateNewBox(Profile representingProfile)
     {
         SelectableProfile actualBox = GrabFromPool(transform.parent);
         actualBox.transform.parent = transform;
@@ -129,6 +134,7 @@ public class ProfileScrollableList : MonoBehaviour
             SelectedBox = actualBox;
         }
         _selectableBoxes.Add(actualBox);
+        return actualBox;
     }
     private SelectableProfile GrabFromPool(Transform parent)
     {
@@ -198,12 +204,7 @@ public class ProfileScrollableList : MonoBehaviour
     }
     private void UpdateList()
     {
-        foreach(SelectableBox selectableBox in _selectableBoxes)
-        {
-            selectableBox.gameObject.SetActive(false);
-        }
-        _selectableBoxes.Clear();
-        StartCoroutine(WaitProfileData());
+        FindObjectOfType<MainMenu>().OnButtonClickPerfilesMenu();
     }
     public void CreateProfile(Profile profile)
     {
@@ -243,6 +244,7 @@ public class ProfileScrollableList : MonoBehaviour
         TaskAwaiter<ResponseDTO<object>> awaiter;
         try
         {
+            ((SelectableProfile)SelectedBox).RepresentingProfile.Creator = AcountManager.Session;
             awaiter = controller.DeleteAsync(((SelectableProfile)SelectedBox).RepresentingProfile).GetAwaiter();
         }
         catch (Exception)
@@ -270,7 +272,7 @@ public class ProfileScrollableList : MonoBehaviour
     {
         try
         {
-            gameObject.SetActive(true);
+            _profileNameEditor.gameObject.SetActive(true);
             _profileNameEditor.EditProfile((SelectableProfile)SelectedBox);
         }
         catch (Exception)
@@ -281,6 +283,7 @@ public class ProfileScrollableList : MonoBehaviour
     }
     public void CreateProcess()
     {
+        _profileNameEditor.gameObject.SetActive(true);
         _profileNameEditor.CreateProfile();
     }
 }
