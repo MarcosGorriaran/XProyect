@@ -57,7 +57,7 @@ public abstract class ScrollableList : MonoBehaviour
             SelectedBox = _scrollList.First();
         }
     }
-    public void SelectUpElement()
+    public virtual void SelectUpElement()
     {
         if (ScrollList.Count == 0) return;
         SelectableBox actualBox;
@@ -78,7 +78,7 @@ public abstract class ScrollableList : MonoBehaviour
         }
         SelectedBox = actualBox;
     }
-    public void SelectDownElement()
+    public virtual void SelectDownElement()
     {
         if (ScrollList.Count == 0) return;
         SelectableBox actualBox = null;
