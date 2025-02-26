@@ -1,14 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AcountSessionManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject _logedInElement;
+    GameObject[] _logedInElement;
     [SerializeField]
-    GameObject _logedOutElement;
+    GameObject[] _logedOutElement;
+    [SerializeField]
+    Button[] _disableInteractableOnLogOut;
     [SerializeField]
     TMP_Text _usernameShow;
     // Start is called before the first frame update
@@ -16,21 +17,44 @@ public class AcountSessionManager : MonoBehaviour
     {
         if (AcountManager.Session != null)
         {
-            _logedInElement.SetActive(true);
-            _logedOutElement.SetActive(false);
+            LogIn();
             _usernameShow.text = AcountManager.Session.Username;
         }
         else
         {
-            _logedInElement.SetActive(false);
-            _logedOutElement.SetActive(true);
+            LogOut();
         }
     }
 
     public void LogOut()
     {
         AcountManager.CloseSession();
-        _logedInElement.SetActive(false);
-        _logedOutElement.SetActive(true);
+        foreach (GameObject go in _logedInElement)
+        {
+            go.SetActive(false);
+        }
+        foreach (GameObject go in _logedOutElement)
+        {
+            go.SetActive(true);
+        }
+        foreach (Button button in _disableInteractableOnLogOut)
+        {
+            button.interactable = false;
+        }
+    }
+    private void LogIn()
+    {
+        foreach (GameObject go in _logedInElement)
+        {
+            go.SetActive(true);
+        }
+        foreach (GameObject go in _logedOutElement)
+        {
+            go.SetActive(false) ;
+        }
+        foreach(Button button in _disableInteractableOnLogOut)
+        {
+            button.interactable = true;
+        }
     }
 }

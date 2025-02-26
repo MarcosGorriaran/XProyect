@@ -1965,8 +1965,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f997ff6eb8948d46a5c6c336397d896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _logedInElement: {fileID: 717967618}
-  _logedOutElement: {fileID: 1993948133}
+  _logedInElement:
+  - {fileID: 717967618}
+  _logedOutElement:
+  - {fileID: 1993948133}
+  _disableInteractableOnLogOut:
+  - {fileID: 1645317622}
   _usernameShow: {fileID: 740166151}
 --- !u!1 &1526609980
 GameObject:
