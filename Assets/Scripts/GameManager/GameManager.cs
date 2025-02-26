@@ -19,11 +19,11 @@ public class GameManager : MonoBehaviour
     {
         maxPlayers = PlayerPrefs.GetInt("SelectedNumber");
         instantiatedPlayers = new GameObject[maxPlayers];
-        StartCoroutine(AssignPlayers());
+        AssignPlayers();
     }
 
 
-    private IEnumerator AssignPlayers()
+    private void AssignPlayers()
     {
         for (int i = 0; i < maxPlayers; i++)
         {
@@ -41,37 +41,8 @@ public class GameManager : MonoBehaviour
             instantiatedPlayers[i] = playerInstance;
             PlayerController controller = playerInstance.GetComponentInChildren<PlayerController>();
             controller.SetPlayerIndex(i);
+            controller.SetInputIndex(deviceId);
             Debug.Log($"Esperando input para Player {i} con DeviceID {deviceId}...");
-
-            bool assigned = false;
-
-            // Esperar hasta que el PlayerInput est? completamente inicializado
-            PlayerInput playerInput = FindObjectOfType<PlayerInput>();
-            while (playerInput == null || !playerInput.enabled) // Espera hasta que PlayerInput est? listo
-            {
-                yield return null;
-                playerInput = FindObjectOfType<PlayerInput>(); ; // Intentar obtener PlayerInput nuevamente
-            }
-
-            while (!assigned)
-            {
-                Debug.Log($"Buscando dispositivo con DeviceID {deviceId}...");
-                // Escucha los dispositivos conectados
-                foreach (var device in InputSystem.devices)
-                {
-                    Debug.Log($"Dispositivo: {device.name}, DeviceID: {(int)device.deviceId}");
-                    if ((int)device.deviceId == deviceId)
-                    {
-                        playerInput.SwitchCurrentControlScheme(device);
-                        playerInput.user.AssociateActionsWithUser(playerInput.actions);
-                        Debug.Log($"Player {i} asignado al dispositivo {device.name} con DeviceID {deviceId}");
-                        assigned = true;
-                        break;
-                    }
-                }
-
-                yield return null; // Espera un frame antes de volver a comprobar
-            }
         }
         ScreenDivision();
     }

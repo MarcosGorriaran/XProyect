@@ -16,19 +16,24 @@ public class PlayerInputHandler : MonoBehaviour
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
+        int deviceID = playerInput.devices[0].deviceId; //busca el device id del playerInput
 
         //busca tots els playerController a la escena
         var players = FindObjectsOfType<PlayerController>();
-
-        playerController = players.FirstOrDefault(m => m.GetPlayerIndex() == playerInput.playerIndex);
-        if (playerController != null)
+        bool assigned = false;
+        while(!assigned)
         {
-            Debug.Log("PlayerController founded!");
-            cameraRotation = playerController.GetComponentInChildren<CameraRotation>();
-            if (cameraRotation != null)
+            playerController = players.FirstOrDefault(x => x.GetInputIndex() == deviceID); //busca el playerController que tenga de indice el device id del playerInput
+            if(playerController != null)
             {
-                Debug.Log("Camera founded!");
-            }
+                Debug.Log("PlayerController founded!");
+                cameraRotation = playerController.GetComponentInChildren<CameraRotation>();
+                if(cameraRotation != null)
+                {
+                    Debug.Log("Camera founded!");
+                }
+                assigned = true;
+            }   
         }
     }
 

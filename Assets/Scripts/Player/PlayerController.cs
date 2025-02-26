@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 1.5f;
     [SerializeField] private LayerMask groundLayer;
     private int playerIndex;
+    private int inputIndex;
 
     private Rigidbody rb;
     private Vector2 inputVector = Vector2.zero;
@@ -218,10 +219,20 @@ public class PlayerController : MonoBehaviour
         playerIndex = index;
     }
 
+    public void SetInputIndex(int index)
+    {
+        inputIndex = index;
+    }
+
 
     public int GetPlayerIndex()
     {
         return playerIndex;
+    }
+
+    public int GetInputIndex()
+    {
+        return inputIndex;
     }
 
     private void UpdateFirstPersonAnimations()
