@@ -25,6 +25,10 @@ public class PlayerController : MonoBehaviour
     private Animator currentFPAnimator;
     public Animator FPCrossbow;
     private bool hasGorrocoptero = false;
+    public AudioSource audioSource;
+    public AudioClip jumpSound;
+    public AudioClip walkSound;
+    public AudioClip runSound;
 
 
     private void Awake()
