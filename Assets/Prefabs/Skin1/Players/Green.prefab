@@ -2271,6 +2271,7 @@ GameObject:
   - component: {fileID: 669751288874488173}
   - component: {fileID: 4566541957334409779}
   - component: {fileID: 6968477926989792899}
+  - component: {fileID: 5745719274431434070}
   m_Layer: 0
   m_Name: Ballesta.002
   m_TagString: Untagged
@@ -2380,6 +2381,105 @@ MonoBehaviour:
   shooting: 1
   duringRecharge: 0
   weaponSO: {fileID: 11400000, guid: 1990bf7d222e39341823e99fd533ac8f, type: 2}
+  shootSound: {fileID: 8300000, guid: 1379705dbb5d9af47a6bf5369199cf67, type: 3}
+  reloadSound: {fileID: 0}
+  audioSource: {fileID: 5745719274431434070}
+--- !u!82 &5745719274431434070
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4835227522998021952}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4940750048214050662
 GameObject:
   m_ObjectHideFlags: 0
@@ -4320,10 +4420,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.90009093
-  m_Height: 9.656372
+  m_Radius: 1.3006862
+  m_Height: 9.589607
   m_Direction: 1
-  m_Center: {x: 0.01769333, y: 4.8411026, z: 0.32931748}
+  m_Center: {x: 0.017693391, y: 4.807726, z: -0.07127785}
 --- !u!114 &7127785459674687352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4573,7 +4673,7 @@ GameObject:
   - component: {fileID: 316782184110615233}
   m_Layer: 0
   m_Name: Green
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7418,6 +7518,9 @@ MonoBehaviour:
   shooting: 1
   duringRecharge: 0
   weaponSO: {fileID: 11400000, guid: 6d0983008140e7a46a0c9a33d0d03506, type: 2}
+  shootSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!4 &4356249694146780957 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4710624688977261499, guid: 9341ecb4579fc12478d98408b419c28b, type: 3}

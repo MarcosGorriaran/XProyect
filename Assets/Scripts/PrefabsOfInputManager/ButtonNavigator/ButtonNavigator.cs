@@ -79,9 +79,11 @@ public class ButtonNavigator : MonoBehaviour
         foreach (var button in buttons)
         {
             button.GetComponentInChildren<TMP_Text>().color = Color.white; // Color por defecto
+            button.GetComponentInChildren<Image>().color = Color.white; // Color por defecto    
         }
 
         // Resaltar eltexto del boton seleccionado en hexadecimal
-        buttons[newSelection].GetComponentInChildren<TMP_Text>().color = new Color(1f, 0.753631f, 0f); 
+        buttons[newSelection].GetComponentInChildren<TMP_Text>().color = new Color(1f, 0.753631f, 0f);
+        buttons[newSelection].GetComponentInChildren<Image>().color = new Color(1f, 0.753631f, 0f);
     }
 }

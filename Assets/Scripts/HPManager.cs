@@ -13,6 +13,8 @@ public class HPManager : MonoBehaviour
     public event Action<GameObject> onRevive;
     public event Action<float> onHPChange;
     public event Action<float,GameObject> onHPChangeBy;
+    public AudioSource audioSource;
+    public AudioClip hittedSound;
     // Start is called before the first frame update
 
     private void Awake()
@@ -23,6 +25,7 @@ public class HPManager : MonoBehaviour
     {
         if (!IsDead())
         {
+            audioSource.PlayOneShot(hittedSound);
             if (damage < 0) damage = 0;
             hp -= damage;
             onHPChange?.Invoke(-damage);
@@ -39,6 +42,7 @@ public class HPManager : MonoBehaviour
         {
             if (damage < 0) damage = 0;
             hp -= damage;
+            audioSource.PlayOneShot(hittedSound);
             onHPChangeBy?.Invoke(-damage,source);
             onHPChange?.Invoke(damage);
             if (IsDead())

@@ -5,12 +5,14 @@ using TMPro;
 
 public class Countdown : MonoBehaviour
 {
-    //texto TMP que mostrará el tiempo restante
     public TextMeshProUGUI timerText;
-    private float timeRemaining = 10 * 60;
+    private float timeRemaining = 2 * 65;
     public bool isRunning = false;
     private bool isFlashing = false;
     public GameManager gameManager;
+    public AudioSource audioSource;
+    public AudioClip countdownSound;
+    private bool hasStartedSound = false; // Para evitar reiniciar el sonido varias veces
 
     void Update()
     {
@@ -21,10 +23,18 @@ public class Countdown : MonoBehaviour
                 timeRemaining -= Time.deltaTime;
                 UpdateTimerDisplay();
 
+                // Iniciar parpadeo y sonido si quedan 16 segundos
                 if (timeRemaining <= 16 && !isFlashing)
                 {
                     isFlashing = true;
                     StartCoroutine(FlashText());
+                }
+
+                if (timeRemaining <= 16 && !hasStartedSound)
+                {
+                    hasStartedSound = true;
+                    audioSource.clip = countdownSound;
+                    audioSource.Play();
                 }
             }
             else
@@ -32,6 +42,12 @@ public class Countdown : MonoBehaviour
                 timeRemaining = 0;
                 isRunning = false;
                 timerText.text = "00:00";
+
+                // Detener el sonido cuando se acabe el tiempo
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
             }
         }
     }
@@ -42,11 +58,11 @@ public class Countdown : MonoBehaviour
         int seconds = Mathf.FloorToInt(timeRemaining % 60);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         gameManager.CheckWinner();
+
         if (timeRemaining <= 0)
         {
             gameManager.PlayerWithMoreKills();
         }
-      
     }
 
     IEnumerator FlashText()
