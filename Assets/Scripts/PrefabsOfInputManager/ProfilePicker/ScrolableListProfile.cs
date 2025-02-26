@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScrolableListProfile : MonoBehaviour
+public class ScrolableListProfile : ScrollableList
 {
-    
-    Di
+    protected override void Start()
+    {
+        base.Start();
+
+    }
+
 }
