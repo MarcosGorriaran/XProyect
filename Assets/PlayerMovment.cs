@@ -89,6 +89,15 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeSensibility"",
+                    ""type"": ""Value"",
+                    ""id"": ""d240b53e-e298-4c22-aee2-c837f7d3298d"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -386,6 +395,28 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ChangeWeaponInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""382e2a3d-369a-4257-99ae-fe4213d08357"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=-1)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeSensibility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a57314c-5766-4223-b613-9883ddf3d547"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale"",
+                    ""groups"": """",
+                    ""action"": ""ChangeSensibility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -980,6 +1011,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         m_Player_ChangeWeapon = m_Player.FindAction("ChangeWeapon", throwIfNotFound: true);
         m_Player_Recharge = m_Player.FindAction("Recharge", throwIfNotFound: true);
         m_Player_ChangeWeaponInventory = m_Player.FindAction("ChangeWeaponInventory", throwIfNotFound: true);
+        m_Player_ChangeSensibility = m_Player.FindAction("ChangeSensibility", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1060,6 +1092,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ChangeWeapon;
     private readonly InputAction m_Player_Recharge;
     private readonly InputAction m_Player_ChangeWeaponInventory;
+    private readonly InputAction m_Player_ChangeSensibility;
     public struct PlayerActions
     {
         private @PlayerMovment m_Wrapper;
@@ -1071,6 +1104,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         public InputAction @ChangeWeapon => m_Wrapper.m_Player_ChangeWeapon;
         public InputAction @Recharge => m_Wrapper.m_Player_Recharge;
         public InputAction @ChangeWeaponInventory => m_Wrapper.m_Player_ChangeWeaponInventory;
+        public InputAction @ChangeSensibility => m_Wrapper.m_Player_ChangeSensibility;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1101,6 +1135,9 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
             @ChangeWeaponInventory.started += instance.OnChangeWeaponInventory;
             @ChangeWeaponInventory.performed += instance.OnChangeWeaponInventory;
             @ChangeWeaponInventory.canceled += instance.OnChangeWeaponInventory;
+            @ChangeSensibility.started += instance.OnChangeSensibility;
+            @ChangeSensibility.performed += instance.OnChangeSensibility;
+            @ChangeSensibility.canceled += instance.OnChangeSensibility;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1126,6 +1163,9 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
             @ChangeWeaponInventory.started -= instance.OnChangeWeaponInventory;
             @ChangeWeaponInventory.performed -= instance.OnChangeWeaponInventory;
             @ChangeWeaponInventory.canceled -= instance.OnChangeWeaponInventory;
+            @ChangeSensibility.started -= instance.OnChangeSensibility;
+            @ChangeSensibility.performed -= instance.OnChangeSensibility;
+            @ChangeSensibility.canceled -= instance.OnChangeSensibility;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1315,6 +1355,7 @@ public partial class @PlayerMovment: IInputActionCollection2, IDisposable
         void OnChangeWeapon(InputAction.CallbackContext context);
         void OnRecharge(InputAction.CallbackContext context);
         void OnChangeWeaponInventory(InputAction.CallbackContext context);
+        void OnChangeSensibility(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
