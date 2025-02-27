@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 8561133589002375595}
   m_Layer: 5
   m_Name: AddProfileButton
-  m_TagString: Untagged
+  m_TagString: ButtonGroup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

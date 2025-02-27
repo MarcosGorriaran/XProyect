@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Android.LowLevel;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -26,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void AssignPlayers()
     {
-        for (int i = 0; i < maxPlayers; i++)
+        for (int i = 0; i <= maxPlayers; i++)
         {
             int skin = PlayerPrefs.GetInt($"Player{i}Skin", -1);
             int deviceId = PlayerPrefs.GetInt($"Player{i}DeviceID", -1);
@@ -54,7 +50,7 @@ public class GameManager : MonoBehaviour
         float defaultAspect = 16f / 9f; // Aspect ratio estándar
         float newAspect;
 
-        for (int i = 0; i < maxPlayers; i++)
+        for (int i = 0; i <= maxPlayers; i++)
         {
             // Crear capas para el jugador y su primera persona
             string playerLayerName = "Player" + i;
@@ -81,7 +77,7 @@ public class GameManager : MonoBehaviour
                 playerCamera.cullingMask &= ~(1 << playerLayer);
 
                 // No renderizar la primera persona de los demás
-                for (int j = 0; j < maxPlayers; j++)
+                for (int j = 0; j <= maxPlayers; j++)
                 {
                     if (i != j)
                     {

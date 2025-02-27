@@ -62,7 +62,19 @@ public class ScrolableListProfile : ScrollableList
         {
 
         }
+
+        SetTagRecursively(transform, "PlayerButtons" + PlayerIndex);
     }
+
+    private void SetTagRecursively(Transform parent, string newTag)
+    {
+        parent.tag = newTag;
+        foreach (Transform child in parent)
+        {
+            SetTagRecursively(child, newTag);
+        }
+    }
+
     private void SelectedProfile(Profile profile)
     {
         selectedProfile?.Invoke(profile,PlayerIndex,this);
