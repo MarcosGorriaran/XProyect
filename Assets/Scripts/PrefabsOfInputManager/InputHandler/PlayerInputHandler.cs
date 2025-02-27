@@ -98,4 +98,13 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    public void OnChangeSensibility(InputAction.CallbackContext context)
+    {
+        if (playerController != null && cameraRotation != null && context.performed)
+        {
+            float inputValue = context.ReadValue<float>();
+            playerController.ChangeSensibility(inputValue);
+        }
+    }
+
 }

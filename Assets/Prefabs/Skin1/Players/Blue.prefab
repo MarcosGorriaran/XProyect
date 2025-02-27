@@ -1418,7 +1418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a736584e401f8f4092a791556c21357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedHp: {fileID: 0}
+  trackedHp: {fileID: 834474080229126342}
   hpFill: {fileID: 4932692394213906645}
   damageImage: {fileID: 415354063096881140}
   duration: 0.2

@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip walkSound;
     public AudioClip runSound;
+    private CameraRotation camera;
 
 
     private void Awake()
@@ -37,7 +38,8 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         orientation = transform.Find("Camera");
         inventory = GetComponent<Inventory>();
-        animator = GetComponent<Animator>();    
+        animator = GetComponent<Animator>();
+        camera = GetComponentInChildren<Camera>().GetComponent<CameraRotation>();
     }
 
     private void Update()
@@ -302,5 +304,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+    }
+
+    public void ChangeSensibility(float direction)
+    {
+        if (camera == null) return;
+
+        float sensibilityStep = 0.1f;
+
+        camera.lookSensitivity += direction * sensibilityStep;
+
+        camera.lookSensitivity = Mathf.Clamp(camera.lookSensitivity, 0.1f, 10f);
+
+        Debug.Log("Sensibilidad actual: " + camera.lookSensitivity);
     }
 }
