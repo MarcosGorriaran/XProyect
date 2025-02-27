@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Countdown timer;
     public int maxPlayers = 0;
     public PlayerInfo[] playerInfos;
+    public DynamicAudioListener audioListener;
 
     private void Start()
     {
@@ -45,6 +46,8 @@ public class GameManager : MonoBehaviour
             Debug.Log($"Esperando input para Player {i} con DeviceID {deviceId}...");
         }
         ScreenDivision();
+        audioListener.GetPlayers();
+
     }
     private void ScreenDivision()
     {

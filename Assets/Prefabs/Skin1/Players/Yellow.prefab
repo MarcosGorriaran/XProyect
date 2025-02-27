@@ -3064,7 +3064,7 @@ GameObject:
   - component: {fileID: 8455669369311447652}
   m_Layer: 0
   m_Name: Yellow
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3876,10 +3876,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.90009093
-  m_Height: 9.656372
+  m_Radius: 1.3006862
+  m_Height: 9.589607
   m_Direction: 1
-  m_Center: {x: 0.01769333, y: 4.8411026, z: 0.32931748}
+  m_Center: {x: 0.017693391, y: 4.807726, z: -0.07127785}
 --- !u!114 &5945874653809723942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4266,6 +4266,9 @@ MonoBehaviour:
   shooting: 1
   duringRecharge: 0
   weaponSO: {fileID: 11400000, guid: 1990bf7d222e39341823e99fd533ac8f, type: 2}
+  shootSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!1 &6424379726653828720
 GameObject:
   m_ObjectHideFlags: 0
@@ -7765,6 +7768,9 @@ MonoBehaviour:
   shooting: 1
   duringRecharge: 0
   weaponSO: {fileID: 11400000, guid: 6d0983008140e7a46a0c9a33d0d03506, type: 2}
+  shootSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!4 &4400834130223361011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4710624688977261499, guid: 9341ecb4579fc12478d98408b419c28b, type: 3}

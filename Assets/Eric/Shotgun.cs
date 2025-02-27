@@ -20,6 +20,9 @@ public class Shotgun : MonoBehaviour, IWeapon
     private bool isRecharged = true;
     private float time = 0f;
     [SerializeField] WeaponSO weaponSO;
+    public AudioSource audioSource;
+    public AudioClip shootSound;
+    public AudioClip reloadSound;
 
     void Start()
     {
@@ -78,6 +81,8 @@ public class Shotgun : MonoBehaviour, IWeapon
             bullet.transform.position = shootSpawns[i].position; // Usamos cada punto de disparo
             bullet.SetActive(true);
 
+            audioSource.PlayOneShot(shootSound);
+
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
             Vector3 direction = (targetPoint - shootSpawns[i].position).normalized; // Dirección desde cada punto de disparo
             rb.velocity = direction * bulletSpeed; // Establecemos la velocidad en la dirección calculada
@@ -128,6 +133,9 @@ public class Shotgun : MonoBehaviour, IWeapon
         // Marca que está recargando
         duringRecharge = true;
         time = 0f;
+
+        //audio de recarga
+        audioSource.PlayOneShot(reloadSound);
 
         // Proceso de recarga
         while (time < autoRechargeTime)

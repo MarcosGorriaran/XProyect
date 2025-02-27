@@ -17,6 +17,9 @@ public class Crossbow : MonoBehaviour, IWeapon
     private Stack<GameObject> bullets; // Pool de balas
     private float time = 0f;
     [SerializeField] private WeaponSO weaponSO;
+    public AudioClip shootSound;
+    public AudioClip reloadSound;
+    public AudioSource audioSource;
 
     void Start()
     {
@@ -71,6 +74,8 @@ public class Crossbow : MonoBehaviour, IWeapon
         bullet.transform.position = shootSpawn.position;
         bullet.transform.rotation = shootSpawn.rotation;
         bullet.SetActive(true);
+        //ejecutar sonido
+        audioSource.PlayOneShot(shootSound);
 
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
@@ -140,6 +145,7 @@ public class Crossbow : MonoBehaviour, IWeapon
     {
         duringRecharge = true;
         time = 0f;
+        audioSource.PlayOneShot(reloadSound);
 
         while (time < autoRechargeTime)
         {
