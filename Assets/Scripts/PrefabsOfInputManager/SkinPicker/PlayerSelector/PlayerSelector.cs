@@ -2,6 +2,8 @@
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerSelector : MonoBehaviour
 {
@@ -55,6 +57,22 @@ public class PlayerSelector : MonoBehaviour
             UpdateHighlight(0);
         }
     }
+
+    public void Update()
+    {
+        CheckNewButtons();
+    }
+
+    private void CheckNewButtons()
+    {
+        string buttonGroupTag = $"PlayerButtons{playerIndex}";
+        
+        Button[] newButtons = GameObject.FindGameObjectsWithTag(buttonGroupTag)
+            .Select(obj => obj.GetComponent<Button>())
+            .Where(button => button != null)
+            .ToArray();
+    }
+
 
     private void UpdateHighlight(int newSelection)
     {
@@ -114,6 +132,12 @@ public class PlayerSelector : MonoBehaviour
         {
             Debug.LogError($"Player {playerIndex} no tiene botones configurados para seleccionar.");
             return;
+        }
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName.Equals("SelectProfile"))
+        {
+            characterButtons[currentSelection].onClick.Invoke();
         }
 
         if (!isReady)

@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Linq;
+using UnityEngine;
 using ProyectXAPILibrary.Controller;
 using ProyectXAPI.Models;
-using UnityEngine;
 using System.Net.Http;
 using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
@@ -32,7 +31,7 @@ public class GameManager : MonoBehaviour
 
     private void AssignPlayers()
     {
-        for (int i = 0; i < maxPlayers; i++)
+        for (int i = 0; i <= maxPlayers; i++)
         {
             int skin = PlayerPrefs.GetInt($"Player{i}Skin", -1);
             int deviceId = PlayerPrefs.GetInt($"Player{i}DeviceID", -1);
@@ -57,10 +56,10 @@ public class GameManager : MonoBehaviour
     }
     private void ScreenDivision()
     {
-        float defaultAspect = 16f / 9f; // Aspect ratio estándar
+        float defaultAspect = 16f / 9f; // Aspect ratio estÃ¡ndar
         float newAspect;
 
-        for (int i = 0; i < maxPlayers; i++)
+        for (int i = 0; i <= maxPlayers; i++)
         {
             // Crear capas para el jugador y su primera persona
             string playerLayerName = "Player" + i;
@@ -79,15 +78,15 @@ public class GameManager : MonoBehaviour
             instantiatedPlayers[i].layer = playerLayer;
             SetLayerRecursively(instantiatedPlayers[i], playerLayer, fpLayer);
 
-            // Configurar la cámara del jugador
+            // Configurar la cÃ¡mara del jugador
             Camera playerCamera = instantiatedPlayers[i].GetComponentInChildren<Camera>();
             if (playerCamera != null)
             {
                 // No renderizar el propio modelo en tercera persona
                 playerCamera.cullingMask &= ~(1 << playerLayer);
 
-                // No renderizar la primera persona de los demás
-                for (int j = 0; j < maxPlayers; j++)
+                // No renderizar la primera persona de los demÃ¡s
+                for (int j = 0; j <= maxPlayers; j++)
                 {
                     if (i != j)
                     {
@@ -101,7 +100,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Configuración de división de pantalla (igual que antes)
+        // ConfiguraciÃ³n de divisiÃ³n de pantalla (igual que antes)
         switch (maxPlayers)
         {
             case 2:
@@ -190,7 +189,7 @@ public class GameManager : MonoBehaviour
             obj.layer = newLayer;
         }
 
-        // Aplicar la función a todos los hijos
+        // Aplicar la funciÃ³n a todos los hijos
         foreach (Transform child in obj.transform)
         {
             SetLayerRecursively(child.gameObject, newLayer, fpLayer);
@@ -280,9 +279,9 @@ public class GameManager : MonoBehaviour
 
     public void PlayerWithMoreKills()
     {
-        PlayerInfo playerWithMoreKills = playerInfos.OrderByDescending(playerInfo => playerInfo.Kills).FirstOrDefault(); // Obtener el jugador con más kills
-        Debug.Log($"El jugador con más kills es el Player {playerWithMoreKills.playerID} con {playerWithMoreKills.Kills} kills.");
-        //mirar el nombre del jugador con más kills
+        PlayerInfo playerWithMoreKills = playerInfos.OrderByDescending(playerInfo => playerInfo.Kills).FirstOrDefault(); // Obtener el jugador con mÃ¡s kills
+        Debug.Log($"El jugador con mÃ¡s kills es el Player {playerWithMoreKills.playerID} con {playerWithMoreKills.Kills} kills.");
+        //mirar el nombre del jugador con mÃ¡s kills
 
         playerWithMoreKills.Winner = true;
         if (AcountManager.Session == null)

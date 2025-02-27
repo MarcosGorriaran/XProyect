@@ -36,8 +36,19 @@ public class PickProfileManager : PickManager
             listParent.transform.localPosition = _playersPos[i].localPosition;
             list.selectedProfile += ProfileSelected;
             list.PlayerIndex = i;
+            SetTagRecursively(listParent.transform, "PlayerButtons" + i);
         }
     }
+
+    private void SetTagRecursively(Transform parent, string newTag)
+    {
+        parent.tag = newTag;
+        foreach (Transform child in parent)
+        {
+            SetTagRecursively(child, newTag);
+        }
+    }
+
     private void ProfileSelected(Profile profile,int player,ScrolableListProfile eventThrower)
     {
         if (SelectedProfiles.ContainsKey(player))
@@ -46,7 +57,7 @@ public class PickProfileManager : PickManager
             eventThrower.ToggleNavButtons();
             RestPlayerReady(player);
         }
-        else if (!SelectedProfiles.ContainsValue(profile))
+        else if (!SelectedProfiles.ContainsValue(profile) || profile == null)
         {
             SelectedProfiles.Add(player, profile);
             eventThrower.ToggleNavButtons();
