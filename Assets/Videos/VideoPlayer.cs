@@ -34,7 +34,7 @@ public class VideoManager : MonoBehaviour
     void OnVideoFinished(VideoPlayer vp)
     {
         Debug.Log("El video ha terminado. Cargando la siguiente escena...");
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("Menu");
     }
 
 
