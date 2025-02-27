@@ -27314,6 +27314,7 @@ MonoBehaviour:
   - {fileID: 2026589703}
   - {fileID: 1940249101}
   - {fileID: 1662703883}
+  _conectionSO: {fileID: 11400000, guid: ca408714ccf939847a945895a48547e3, type: 2}
   timer: {fileID: 1824998314}
   maxPlayers: 0
   playerInfos: []
