@@ -11,6 +11,7 @@ public class SelectableProfile : SelectableBox
 {
     public static event Action<Profile> SelectedProfileChanged;
     public static event Action<Profile> UseProfileChanged;
+    public event Action<Profile> ProfileSelected;
     private Profile _representingProfile;
     [SerializeField]
     private APIConectionSO _conectionSO;
@@ -41,6 +42,7 @@ public class SelectableProfile : SelectableBox
     public override void UseAction()
     {
         UseProfileChanged?.Invoke(_representingProfile);
+        ProfileSelected?.Invoke(_representingProfile);
     }
     public void UpdateProfile(Profile profile)
     {

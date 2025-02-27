@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class SelectableBox : MonoBehaviour
 {
@@ -13,6 +14,15 @@ public abstract class SelectableBox : MonoBehaviour
     protected TMP_Text BoxName
     {
         get { return _boxName; }
+    }
+
+    protected virtual void Start()
+    {
+        if (TryGetComponent(out Button component))
+        {
+            component.onClick.AddListener(UseAction);
+        }
+
     }
     public abstract void SelectAction();
     public abstract void UseAction();

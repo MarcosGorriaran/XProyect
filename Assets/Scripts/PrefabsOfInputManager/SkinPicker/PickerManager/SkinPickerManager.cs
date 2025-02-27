@@ -76,7 +76,15 @@ public class SkinPickerManager : MonoBehaviour
     }
 
     private void StartGame()
-    { 
-        SceneManager.LoadScene("Scenary");
+    {
+        if (AcountManager.Session != null)
+        {
+            SceneManager.LoadScene("SelectProfile");
+        }
+        else
+        {
+            SceneManager.LoadScene("Scenary");
+        }
+        
     }
 }
