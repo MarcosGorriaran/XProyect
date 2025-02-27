@@ -60,21 +60,55 @@ public abstract class ScrollableList : MonoBehaviour
     public virtual void SelectUpElement()
     {
         if (ScrollList.Count == 0) return;
-        SelectableBox actualBox;
-        float distance;
+        SelectableBox actualBox = null;
+        float distance = 0;
         try
         {
-            actualBox = _scrollList[_scrollList.IndexOf(SelectedBox) + 1];
-            distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
+            switch (_scrollDirection)
+            {
+                case ScrollableListDirection.BottomTop:
+                case ScrollableListDirection.RightLeft:
+                    actualBox = _scrollList[_scrollList.IndexOf(SelectedBox) + 1];
+                    distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
+                    break;
+                case ScrollableListDirection.TopBottom:
+                case ScrollableListDirection.LeftRight:
+                    actualBox = _scrollList[_scrollList.IndexOf(SelectedBox) - 1];
+                    distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0));
+                    break;
+            }
+
         }
         catch (Exception)
         {
-            actualBox = _scrollList.First();
-            distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0));
+            switch (_scrollDirection)
+            {
+                case ScrollableListDirection.BottomTop:
+                case ScrollableListDirection.RightLeft:
+                    actualBox = _scrollList.First();
+                    distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0));
+                    break;
+                case ScrollableListDirection.TopBottom:
+                case ScrollableListDirection.LeftRight:
+                    actualBox = _scrollList.Last();
+                    distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
+                    break;
+            }
         }
         foreach (SelectableBox box in _scrollList)
         {
-            box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x, box.transform.localPosition.y + distance), _transitionTime);
+            switch (_scrollDirection)
+            {
+                case ScrollableListDirection.BottomTop:
+                case ScrollableListDirection.TopBottom:
+                    box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x, box.transform.localPosition.y + distance), _transitionTime);
+                    break;
+                case ScrollableListDirection.LeftRight:
+                case ScrollableListDirection.RightLeft:
+                    box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x + distance, box.transform.localPosition.y), _transitionTime);
+                    break;
+            }
+
         }
         SelectedBox = actualBox;
     }
@@ -88,12 +122,12 @@ public abstract class ScrollableList : MonoBehaviour
             switch (_scrollDirection)
             {
                 case ScrollableListDirection.BottomTop:
-                case ScrollableListDirection.LeftRight:
+                case ScrollableListDirection.RightLeft:
                     actualBox = _scrollList[_scrollList.IndexOf(SelectedBox) - 1];
                     distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0));
                     break;
                 case ScrollableListDirection.TopBottom:
-                case ScrollableListDirection.RightLeft:
+                case ScrollableListDirection.LeftRight:
                     actualBox = _scrollList[_scrollList.IndexOf(SelectedBox) + 1];
                     distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
                     break;
@@ -105,22 +139,31 @@ public abstract class ScrollableList : MonoBehaviour
             switch (_scrollDirection)
             {
                 case ScrollableListDirection.BottomTop:
-                case ScrollableListDirection.LeftRight:
+                case ScrollableListDirection.RightLeft:
                     actualBox = _scrollList.Last();
                     distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
                     break;
                 case ScrollableListDirection.TopBottom:
-                case ScrollableListDirection.RightLeft:
+                case ScrollableListDirection.LeftRight:
                     actualBox = _scrollList.First();
                     distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0));
                     break;
             }
-            actualBox = _scrollList.Last();
-            distance = Vector2.Distance(actualBox.transform.localPosition, new Vector2(0, 0)) * -1;
         }
         foreach (SelectableBox box in _scrollList)
         {
-            box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x, box.transform.localPosition.y + distance), _transitionTime);
+            switch (_scrollDirection)
+            {
+                case ScrollableListDirection.BottomTop:
+                case ScrollableListDirection.TopBottom:
+                    box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x, box.transform.localPosition.y + distance), _transitionTime);
+                    break;
+                case ScrollableListDirection.LeftRight:
+                case ScrollableListDirection.RightLeft:
+                    box.SmoothlyMoveTowards(new Vector2(box.transform.localPosition.x + distance, box.transform.localPosition.y), _transitionTime);
+                    break;
+            }
+            
         }
         SelectedBox = actualBox;
     }

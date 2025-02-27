@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+
+//Luckily there is only one class it inherits its properties and it is the SelectProfileManager
 public abstract class PickManager : MonoBehaviour
 {
     private int playersReady = 0;
-    private int maxPlayers;
+    protected int maxPlayers;
     private PlayerInputManager playerInputManager;
     private static PickManager _instance;
 
