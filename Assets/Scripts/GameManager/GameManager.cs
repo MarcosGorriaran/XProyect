@@ -1,16 +1,25 @@
 using System.Linq;
 using UnityEngine;
+using ProyectXAPILibrary.Controller;
+using ProyectXAPI.Models;
+using System.Net.Http;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
+using ProyectXAPI.Models.DTO;
+using System;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] playerPrefabs;
     [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private APIConectionSO _conectionSO;
     private GameObject[] instantiatedPlayers; //llista de los jugadores instanciados para controlar sus camaras 
     public Countdown timer;
     public int maxPlayers = 0;
     public PlayerInfo[] playerInfos;
     public DynamicAudioListener audioListener;
+    Coroutine _endCoroutine;
 
     private void Start()
     {
@@ -47,7 +56,7 @@ public class GameManager : MonoBehaviour
     }
     private void ScreenDivision()
     {
-        float defaultAspect = 16f / 9f; // Aspect ratio estándar
+        float defaultAspect = 16f / 9f; // Aspect ratio estÃ¡ndar
         float newAspect;
 
         for (int i = 0; i <= maxPlayers; i++)
@@ -69,14 +78,14 @@ public class GameManager : MonoBehaviour
             instantiatedPlayers[i].layer = playerLayer;
             SetLayerRecursively(instantiatedPlayers[i], playerLayer, fpLayer);
 
-            // Configurar la cámara del jugador
+            // Configurar la cÃ¡mara del jugador
             Camera playerCamera = instantiatedPlayers[i].GetComponentInChildren<Camera>();
             if (playerCamera != null)
             {
                 // No renderizar el propio modelo en tercera persona
                 playerCamera.cullingMask &= ~(1 << playerLayer);
 
-                // No renderizar la primera persona de los demás
+                // No renderizar la primera persona de los demÃ¡s
                 for (int j = 0; j <= maxPlayers; j++)
                 {
                     if (i != j)
@@ -91,7 +100,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Configuración de división de pantalla (igual que antes)
+        // ConfiguraciÃ³n de divisiÃ³n de pantalla (igual que antes)
         switch (maxPlayers)
         {
             case 2:
@@ -180,7 +189,7 @@ public class GameManager : MonoBehaviour
             obj.layer = newLayer;
         }
 
-        // Aplicar la función a todos los hijos
+        // Aplicar la funciÃ³n a todos los hijos
         foreach (Transform child in obj.transform)
         {
             SetLayerRecursively(child.gameObject, newLayer, fpLayer);
@@ -205,19 +214,84 @@ public class GameManager : MonoBehaviour
                 timer.isRunning = false;
                 playerInfo.Winner = true;
                 //string con el nombre del player quitandole la palabra (Clone)
-                SetVideo(playerInfo.playerName);
+                if(AcountManager.Session == null)
+                {
+                    SetVideo(playerInfo.playerName);
+                }
+                else
+                {
+                    _endCoroutine = StartCoroutine(SendSessionData(playerInfo));
+                }
+                
+                return;
             }
+        }
+    }
+    private IEnumerator SendSessionData(PlayerInfo player)
+    {
+        HttpClient client = new HttpClient(){BaseAddress = new Uri(_conectionSO.URL)};
+        SessionController sessionController = new SessionController(client);
+        TaskAwaiter<ResponseDTO<Session>> sessionAwaiter = sessionController.CreateAsync(new Session()
+        {
+            SessionID = 0,
+            DateGame = DateTime.Now
+        }).GetAwaiter();
+        ResponseDTO<Session> sessionInfo = null;
+        yield return new WaitUntil(()=>sessionAwaiter.IsCompleted);
+        try
+        {
+            sessionInfo = sessionAwaiter.GetResult();
+            
+        }
+        catch (HttpRequestException)
+        {
+            SetVideo(player.playerName);
+            StopCoroutine(_endCoroutine);
+        }
+        if (!sessionInfo.IsSuccess)
+        {
+            SetVideo(player.playerName);
+            StopCoroutine(_endCoroutine);
+        }
+        else
+        {
+            Session actualSession = sessionInfo.Data;
+
+            SessionDataController dataController = new SessionDataController(client);
+            List<SessionData> dataList = new List<SessionData>();
+            foreach (PlayerInfo info in playerInfos)
+            {
+                if (info.assignedProfile != null)
+                {
+                    SessionData sendData = new SessionData()
+                    {
+                        Session = actualSession,
+                    };
+                    info.FillSessionDataInfo(ref sendData);
+                    dataList.Add(sendData);
+                }
+            }
+            TaskAwaiter<ResponseDTO<object>> dataAwaiter = dataController.CreateMultipleAsync(dataList.ToArray()).GetAwaiter();
+            yield return new WaitUntil(() => dataAwaiter.IsCompleted);
+            SetVideo(player.playerName);
         }
     }
 
     public void PlayerWithMoreKills()
     {
-        PlayerInfo playerWithMoreKills = playerInfos.OrderByDescending(playerInfo => playerInfo.Kills).FirstOrDefault(); // Obtener el jugador con más kills
-        Debug.Log($"El jugador con más kills es el Player {playerWithMoreKills.playerID} con {playerWithMoreKills.Kills} kills.");
-        //mirar el nombre del jugador con más kills
+        PlayerInfo playerWithMoreKills = playerInfos.OrderByDescending(playerInfo => playerInfo.Kills).FirstOrDefault(); // Obtener el jugador con mÃ¡s kills
+        Debug.Log($"El jugador con mÃ¡s kills es el Player {playerWithMoreKills.playerID} con {playerWithMoreKills.Kills} kills.");
+        //mirar el nombre del jugador con mÃ¡s kills
 
         playerWithMoreKills.Winner = true;
-        SetVideo(playerWithMoreKills.playerName);
+        if (AcountManager.Session == null)
+        {
+            SetVideo(playerWithMoreKills.playerName);
+        }
+        else
+        {
+            _endCoroutine = StartCoroutine(SendSessionData(playerWithMoreKills));
+        }
     }
 
     public void SetVideo(string videoName)

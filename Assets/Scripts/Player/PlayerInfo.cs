@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using ProyectXAPI.Models;
 using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
     public int playerID;
+    public Profile assignedProfile;
     public string playerName;
     public int Deaths;
     public int Kills;
@@ -15,6 +15,11 @@ public class PlayerInfo : MonoBehaviour
     {
         PlayerController playerController = GetComponent<PlayerController>();
         playerID = playerController.GetPlayerIndex();
+        if (PickProfileManager.SelectedProfiles.ContainsKey(playerID))
+        {
+            assignedProfile = PickProfileManager.SelectedProfiles[playerID];
+        }
+        
         Deaths = 0;
         Kills = 0;
         KDRatio = 0;
@@ -46,5 +51,12 @@ public class PlayerInfo : MonoBehaviour
         {
             KDRatio = Kills / Deaths;
         }
+    }
+    public void FillSessionDataInfo(ref SessionData data)
+    {
+        data.Kills = Kills;
+        data.Deaths = Deaths;
+        data.Profile = assignedProfile;
+        data.Profile.Creator = AcountManager.Session;
     }
 }
